@@ -49,5 +49,9 @@ int birp_to_ascii(FILE *in, FILE *out) {
  */
 int validargs(int argc, char **argv) {
     // TO BE IMPLEMENTED
+    // return -1 invalid number args
+    // ivalid ordering of args
+    //missing parameter
+    // invalid parameter
     return -1;
 }
