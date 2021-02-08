@@ -18,6 +18,17 @@
 
 int main(int argc, char **argv)
 {
+	//testing
+	if(validargs(argc, argv) == -1){
+		printf("INVALID\n");
+		printf("%d\n", global_options);
+	}
+	else{
+		printf("VALID\n");
+		printf("%d\n", global_options);
+	}
+
+	//end of testing
     if(validargs(argc, argv))
         USAGE(*argv, EXIT_FAILURE);
     if(global_options & HELP_OPTION)
