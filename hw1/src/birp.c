@@ -101,7 +101,7 @@ int validargs(int argc, char **argv) {
         }
         char *arg2 = *(argv + i + 1);
         if(strcompare(arg1, "-i", 2) == 1){
-            if(i_flag == 1){
+            if(i_flag == 1 || add_flag == 1){
                 invalid_flag = 1;
                 break;
             }
@@ -123,7 +123,7 @@ int validargs(int argc, char **argv) {
             }
         }
         else if(strcompare(arg1, "-o", 2) == 1){
-            if(o_flag == 1){
+            if(o_flag == 1 || add_flag == 1){
                 invalid_flag = 1;
                 break;
             }
