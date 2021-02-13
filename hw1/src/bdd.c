@@ -15,7 +15,10 @@
  */
 #define LEFT(np, l) ((l) > (np)->level ? (np) : bdd_nodes + (np)->left)
 #define RIGHT(np, l) ((l) > (np)->level ? (np) : bdd_nodes + (np)->right)
+int bdd_node_table_counter = 256;
 
+int nodeEqual(BDD_NODE *node, char level, int left, int right);
+int hashIndex(int level, int left, int right);
 /**
  * Look up, in the node table, a BDD node having the specified level and children,
  * inserting a new node if a matching node does not already exist.
@@ -24,7 +27,52 @@
  * The function aborts if the arguments passed are out-of-bounds.
  */
 int bdd_lookup(int level, int left, int right) {
-    // TO BE IMPLEMENTED
+    //invalid args check
+    if (left < 0 || left > BDD_NODES_MAX)
+        return -1;
+    if (level < 0 || level > BDD_NODES_MAX)
+        return -1;
+    if (right < 0 || right > BDD_NODES_MAX)
+        return -1;
+    if (left == right)
+        return left;
+
+    int index = hashIndex(level, left, right);
+
+    while (*(bdd_hash_map + index) != NULL){
+        if(nodeEqual(*(bdd_hash_map + index), level, left, right) == 1)
+            return *(bdd_hash_map + index) - bdd_nodes;
+        index++;
+        if(index == BDD_HASH_SIZE) //looping around if reached the end
+            index = 0;
+    }
+
+    //create node
+    BDD_NODE *new_node = bdd_nodes + bdd_node_table_counter;
+    new_node -> level = level;
+    new_node -> left = left;
+    new_node -> right = right;
+
+    *(bdd_hash_map + index) = new_node;
+    return bdd_node_table_counter++;
+}
+
+int hashIndex(int level, int left, int right){
+    int index = level & 0x7f;
+    index = index << 7;
+    index = index | (left & 0x7f);
+    index = index | (right & 0x7f);
+    return index % BDD_HASH_SIZE;
+}
+
+int nodeEqual(BDD_NODE *node, char level, int left, int right){
+    if (node -> level == level && node -> left == left && node -> right == right)
+        return 1;
+    return 0;
+}
+
+int bdd_min_level(int w, int h){
+    //need to implement
     return -1;
 }
 
