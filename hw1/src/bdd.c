@@ -19,6 +19,7 @@ int bdd_node_table_counter = 256;
 
 int nodeEqual(BDD_NODE *node, char level, int left, int right);
 int hashIndex(int level, int left, int right);
+
 /**
  * Look up, in the node table, a BDD node having the specified level and children,
  * inserting a new node if a matching node does not already exist.
@@ -61,6 +62,7 @@ int hashIndex(int level, int left, int right){
     int index = level & 0x7f;
     index = index << 7;
     index = index | (left & 0x7f);
+    index = index <<7;
     index = index | (right & 0x7f);
     return index % BDD_HASH_SIZE;
 }

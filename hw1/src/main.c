@@ -29,6 +29,16 @@ int main(int argc, char **argv)
 	// }
 
 	//end of testing
+
+	// test bddlookup
+	// int x = bdd_lookup(1, 4, 8);
+	// printf("%i\n", x);
+	// x = bdd_lookup(5, 100, 24);
+	// printf("%i\n", x);
+	// x = bdd_lookup(1, 4, 8);
+	// printf("%i\n", x);
+
+
     if(validargs(argc, argv))
         USAGE(*argv, EXIT_FAILURE);
     if(global_options & HELP_OPTION)
@@ -39,6 +49,10 @@ int main(int argc, char **argv)
     	if(pgm_to_ascii(stdin, stdout) == 0)
     		return EXIT_SUCCESS;
     }
+
+
+
+
 
     return EXIT_FAILURE;
 }
