@@ -19,6 +19,7 @@ int bdd_node_table_counter = 256;
 
 int nodeEqual(BDD_NODE *node, char level, int left, int right);
 int hashIndex(int level, int left, int right);
+int bfr_recursion_helper(int wstart, int wend, int hstart, int hend, int w, int h, unsigned char *raster);
 
 /**
  * Look up, in the node table, a BDD node having the specified level and children,
@@ -97,8 +98,45 @@ int bdd_min_level(int w, int h){
 }
 
 BDD_NODE *bdd_from_raster(int w, int h, unsigned char *raster) {
-    // TO BE IMPLEMENTED
-    return NULL;
+    if (w <= 0 || h <= 0)
+        return NULL; // invalid
+    //calculate square size of (w, h)
+    int power = bdd_min_level(w, h);
+    power /= 2;
+    int square = 1;
+    for (int i = 0; i < power; i++){
+        square *= 2;
+    }
+    //call recursive func
+    int index = bfr_recursion_helper(0, square, 0, square, w, h, raster);
+    return bdd_nodes + index;
+
+}
+
+int bfr_recursion_helper(int wstart, int wend, int hstart, int hend, int w, int h, unsigned char *raster){
+    int width = wend - wstart;
+    int height = hend - hstart;
+    if(width * height == 1){
+        if(wstart >= w || hstart >= h)
+            return 0;
+        return *(raster + (hstart * w) + wstart);
+    }
+    else{
+        //continues to recursively call
+        int w_midpoint = (wend - wstart)/2;
+        int h_midpoint = (hend - hstart)/2;
+        int level = bdd_min_level(width, height);
+
+        int top_left = bfr_recursion_helper(wstart, w_midpoint, hstart, h_midpoint, w, h, raster);
+        int top_right = bfr_recursion_helper(w_midpoint, wend, hstart, h_midpoint, w, h, raster);
+        int top_half = bdd_lookup(level, top_left, top_right);
+
+        int bottom_left = bfr_recursion_helper(wstart, w_midpoint, h_midpoint, hend, w, h, raster);
+        int bottom_right = bfr_recursion_helper(w_midpoint, wend, h_midpoint, hend, w, h, raster);
+        int bottom_half = bdd_lookup(level, bottom_left, bottom_right);
+
+        return bdd_lookup(level, top_half, bottom_half);
+    }
 }
 
 void bdd_to_raster(BDD_NODE *node, int w, int h, unsigned char *raster) {
