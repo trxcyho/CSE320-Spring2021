@@ -19,14 +19,14 @@
 int main(int argc, char **argv)
 {
 	//testing part 1
-	// if(validargs(argc, argv) == -1){
-	// 	printf("INVALID\n");
-	// 	printf("%d\n", global_options);
-	// }
-	// else{
-	// 	printf("VALID\n");
-	// 	printf("%d\n", global_options);
-	// }
+	if(validargs(argc, argv) == -1){
+		printf("INVALID\n");
+		printf("%d\n", global_options);
+	}
+	else{
+		printf("VALID\n");
+		printf("%d\n", global_options);
+	}
 
 	//end of testing
 
@@ -43,14 +43,24 @@ int main(int argc, char **argv)
         USAGE(*argv, EXIT_FAILURE);
     if(global_options & HELP_OPTION)
         USAGE(*argv, EXIT_SUCCESS);
-    // TO BE IMPLEMENTED
+
     //program must read input data from stdin and write output data to stdout
     if(global_options == 0x31){
     	if(pgm_to_ascii(stdin, stdout) == 0)
     		return EXIT_SUCCESS;
     }
-
-
+    if (global_options == 0x32){
+    	if(birp_to_ascii(stdin, stdout) == 0)
+    		return EXIT_SUCCESS;
+    }
+    if (global_options == 0x21){
+    	if (pgm_to_birp(stdin, stdout) == 0)
+    		return EXIT_SUCCESS;
+    }
+    if (global_options == 0x12){
+    	if(birp_to_pgm(stdin, stdout) == 0)
+    		return EXIT_SUCCESS;
+    }
 
 
 

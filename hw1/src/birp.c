@@ -123,6 +123,8 @@ int validargs(int argc, char **argv) {
                 add_flag = 1;
                 return 0;
             }
+            global_options = 0;
+            return -1;
 
         }
         char *arg2 = *(argv + i + 1);
