@@ -74,8 +74,26 @@ int nodeEqual(BDD_NODE *node, char level, int left, int right){
 }
 
 int bdd_min_level(int w, int h){
-    //need to implement
-    return -1;
+    if (w < 1 || h < 1)
+        return -1; // invalid
+
+    int max = w;
+    if (h > w)
+        max = h;
+    //base cases
+    if (max == 1)
+        return 0;
+    else if (max == 2)
+        return 2;
+
+    int level = 2;
+    int size = 2;
+    while (size < max){
+        size *= 2;
+        level += 2;
+    }
+
+    return level;
 }
 
 BDD_NODE *bdd_from_raster(int w, int h, unsigned char *raster) {
