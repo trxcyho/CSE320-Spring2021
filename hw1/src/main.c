@@ -61,6 +61,7 @@ int main(int argc, char **argv)
     	if(birp_to_pgm(stdin, stdout) == 0)
     		return EXIT_SUCCESS;
     }
+    //birp to birp
 
 
 
