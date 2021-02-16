@@ -109,6 +109,9 @@ BDD_NODE *bdd_from_raster(int w, int h, unsigned char *raster) {
     }
     //call recursive func
     int index = bfr_recursion_helper(0, square, 0, square, w, h, raster);
+    //recursive call fails
+    if (index < 0)
+        return NULL;
     return bdd_nodes + index;
 
 }
@@ -144,7 +147,10 @@ void bdd_to_raster(BDD_NODE *node, int w, int h, unsigned char *raster) {
 }
 
 int bdd_serialize(BDD_NODE *node, FILE *out) {
-    // TO BE IMPLEMENTED
+    // invalid arg
+    if (node == NULL)
+        return -1;
+    int serial = 1;
     return -1;
 }
 

@@ -19,14 +19,14 @@
 int main(int argc, char **argv)
 {
 	//testing part 1
-	if(validargs(argc, argv) == -1){
-		printf("INVALID\n");
-		printf("%d\n", global_options);
-	}
-	else{
-		printf("VALID\n");
-		printf("%d\n", global_options);
-	}
+	// if(validargs(argc, argv) == -1){
+	// 	printf("INVALID\n");
+	// 	printf("%d\n", global_options);
+	// }
+	// else{
+	// 	printf("VALID\n");
+	// 	printf("%d\n", global_options);
+	// }
 
 	//end of testing
 
