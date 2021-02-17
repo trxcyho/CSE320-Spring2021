@@ -37,6 +37,10 @@ int main(int argc, char **argv)
 	// printf("%i\n", x);
 	// x = bdd_lookup(1, 4, 8);
 	// printf("%i\n", x);
+	// x = bdd_lookup(2, 5, 4);
+	// printf("%i\n", x);
+	// x = bdd_lookup(5, 100, 24);
+	// printf("%i\n", x);
 
 
     if(validargs(argc, argv))

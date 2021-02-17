@@ -13,7 +13,15 @@ int strsize(char* str);
 int strToNum(char *str);
 
 int pgm_to_birp(FILE *in, FILE *out) {
-    // TO BE IMPLEMENTED
+    int width = 0;
+    int height = 0;
+    if(img_read_pgm(in, &width, &height, raster_data, RASTER_SIZE_MAX))
+        goto endofpgmtobirp; //reading pgm file unsuccessful
+
+    //call img_write_birp
+
+    return 0;
+    endofpgmtobirp:
     return -1;
 }
 

@@ -20,6 +20,7 @@ int bdd_node_table_counter = 256;
 int nodeEqual(BDD_NODE *node, char level, int left, int right);
 int hashIndex(int level, int left, int right);
 int bfr_recursion_helper(int wstart, int wend, int hstart, int hend, int w, int h, unsigned char *raster);
+void bs_recursive(BDD_NODE *node, FILE *out, int *serial);
 
 /**
  * Look up, in the node table, a BDD node having the specified level and children,
@@ -151,11 +152,39 @@ int bdd_serialize(BDD_NODE *node, FILE *out) {
     if (node == NULL)
         return -1;
     int serial = 1;
-    return -1;
+    bs_recursive(node, out, &serial);
+    //return 1? and never -1
+    return 1;
+}
+
+void bs_recursive(BDD_NODE *node, FILE *out, int *serial){
+    int level = node -> level; // is it int when its actually char in struct
+    int left = node -> left;
+    int right = node -> right;
+
+    if(left < 256){
+        fputc('@', out);
+        // fputc("%d", left, out);//use fprintf()?
+        *(bdd_index_map + left) = *serial;  //puts serial number in index map
+        (*serial)++; //is reference needed? is this valid?
+    }
+
+    // bs_recursive( *(bdd_nodes+left), out, serial);
+    if(right < 256){
+        // fputc("@%d", right, out);
+        *(bdd_index_map + right) = *serial;
+        (*serial)++;
+    }
+    // bs_recursive(*(bdd_nodes + right), out, serial);
+
+    left = *(bdd_index_map + left);
+    right = *(bdd_index_map + right);
+
+    // fprintf("%c%d%d", level+'@', left, right);
 }
 
 BDD_NODE *bdd_deserialize(FILE *in) {
-    // TO BE IMPLEMENTED
+    // return NULL when file format is incorrect
     return NULL;
 }
 
