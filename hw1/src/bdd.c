@@ -21,6 +21,7 @@ int nodeEqual(BDD_NODE *node, char level, int left, int right);
 int hashIndex(int level, int left, int right);
 int bfr_recursion_helper(int wstart, int wend, int hstart, int hend, int w, int h, unsigned char *raster);
 void bs_recursive(BDD_NODE *node, FILE *out, int *serial);
+int bd_helper(int *serial, FILE *in);
 
 /**
  * Look up, in the node table, a BDD node having the specified level and children,
@@ -158,34 +159,54 @@ int bdd_serialize(BDD_NODE *node, FILE *out) {
 }
 
 void bs_recursive(BDD_NODE *node, FILE *out, int *serial){
-    int level = node -> level; // is it int when its actually char in struct
     int left = node -> left;
     int right = node -> right;
+    char c = 0;
 
     if(left < 256){
         fputc('@', out);
-        // fputc("%d", left, out);//use fprintf()?
+        c = left;
+        fputc(c, out);//prints left leaf node
         *(bdd_index_map + left) = *serial;  //puts serial number in index map
         (*serial)++; //is reference needed? is this valid?
     }
 
-    // bs_recursive( *(bdd_nodes+left), out, serial);
+    bs_recursive((bdd_nodes+left), out, serial);
     if(right < 256){
-        // fputc("@%d", right, out);
+        fputc('@', out);
+        c = right;
+        fputc(c, out);//prints right leaf node
         *(bdd_index_map + right) = *serial;
         (*serial)++;
     }
-    // bs_recursive(*(bdd_nodes + right), out, serial);
+    bs_recursive((bdd_nodes + right), out, serial);
 
+    int index = bdd_nodes-node;
+    if((bdd_index_map + index) == 0){       //check if node already has serial number
+        *(bdd_index_map + index) = *serial;
+        (*serial)++;
+    }
+    int level = node -> level;
+    level += 64;
     left = *(bdd_index_map + left);
     right = *(bdd_index_map + right);
 
-    // fprintf("%c%d%d", level+'@', left, right);
+    fprintf(out, "%c%c%c", level+'@', left, right);
 }
 
 BDD_NODE *bdd_deserialize(FILE *in) {
     // return NULL when file format is incorrect
+    int serial = 1;
+
     return NULL;
+}
+
+int bd_helper(int *serial, FILE *in){
+    int c= 0, left = 0, right = 0;
+    // for(){
+    //     c = fgetc(in);
+    // }
+    return -1;
 }
 
 unsigned char bdd_apply(BDD_NODE *node, int r, int c) {
