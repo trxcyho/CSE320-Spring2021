@@ -197,16 +197,38 @@ void bs_recursive(BDD_NODE *node, FILE *out, int *serial){
 BDD_NODE *bdd_deserialize(FILE *in) {
     // return NULL when file format is incorrect
     int serial = 1;
-
-    return NULL;
+    int index = bd_helper(&serial, in);
+    if (index < 0)
+        return NULL;
+    return bdd_nodes + index;
 }
 
 int bd_helper(int *serial, FILE *in){
-    int c= 0, left = 0, right = 0;
-    // for(){
-    //     c = fgetc(in);
-    // }
-    return -1;
+    int c= 0, left = 0, right = 0, index = 0;
+    while(c != EOF) {
+        c = fgetc(in);
+        if(c == '@'){
+            c = fgetc(in);
+            if(c > 255 || c < 0)
+                return -1;
+            *(bdd_index_map + (*serial)) = c;
+            (*serial)++;
+
+        }
+        else {
+            c = c- '@';
+            left = fgetc(in);
+            right = fgetc(in);
+            if(c < 0 || c > 32)
+                return -1;
+            if (left < 0 || right < 0)
+                return -1;
+            left = *(bdd_index_map + left);
+            right = *(bdd_index_map + right);
+            index = bdd_lookup(c, left, right);
+        }
+    }
+    return index;
 }
 
 unsigned char bdd_apply(BDD_NODE *node, int r, int c) {
