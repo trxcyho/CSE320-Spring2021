@@ -65,7 +65,10 @@ int main(int argc, char **argv)
     	if(birp_to_pgm(stdin, stdout) == 0)
     		return EXIT_SUCCESS;
     }
-    //birp to birp
+    if (global_options == 0x22){
+    	if (birp_to_birp(stdin, stdout) == 0)
+    		return EXIT_SUCCESS;
+    }
 
 
 

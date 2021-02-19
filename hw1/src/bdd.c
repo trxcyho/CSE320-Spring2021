@@ -128,17 +128,17 @@ int bfr_recursion_helper(int wstart, int wend, int hstart, int hend, int w, int 
     }
     else{
         //continues to recursively call
-        int w_midpoint = (wend - wstart)/2;
-        int h_midpoint = (hend - hstart)/2;
+        int w_midpoint = (wend + wstart)/2;
+        int h_midpoint = (hend + hstart)/2;
         int level = bdd_min_level(width, height);
 
         int top_left = bfr_recursion_helper(wstart, w_midpoint, hstart, h_midpoint, w, h, raster);
         int top_right = bfr_recursion_helper(w_midpoint, wend, hstart, h_midpoint, w, h, raster);
-        int top_half = bdd_lookup(level, top_left, top_right);
+        int top_half = bdd_lookup(level -1, top_left, top_right);
 
         int bottom_left = bfr_recursion_helper(wstart, w_midpoint, h_midpoint, hend, w, h, raster);
         int bottom_right = bfr_recursion_helper(w_midpoint, wend, h_midpoint, hend, w, h, raster);
-        int bottom_half = bdd_lookup(level, bottom_left, bottom_right);
+        int bottom_half = bdd_lookup(level - 1, bottom_left, bottom_right);
 
         return bdd_lookup(level, top_half, bottom_half);
     }
@@ -164,34 +164,52 @@ void bs_recursive(BDD_NODE *node, FILE *out, int *serial){
     char c = 0;
 
     if(left < 256){
-        fputc('@', out);
-        c = left;
-        fputc(c, out);//prints left leaf node
-        *(bdd_index_map + left) = *serial;  //puts serial number in index map
-        (*serial)++; //is reference needed? is this valid?
+        if(*(bdd_index_map + left) == 0){
+            *(bdd_index_map + left) = *serial;  //puts serial number in index map
+            fputc('@', out);
+            c = left;
+            fputc(c, out);//prints left leaf node
+            (*serial)++; //is reference needed? is this valid?
+        }
     }
-
-    bs_recursive((bdd_nodes+left), out, serial);
+    else
+        bs_recursive((bdd_nodes+left), out, serial);
     if(right < 256){
-        fputc('@', out);
-        c = right;
-        fputc(c, out);//prints right leaf node
-        *(bdd_index_map + right) = *serial;
-        (*serial)++;
+        if(*(bdd_index_map + right) == 0){
+            *(bdd_index_map + right) = *serial;
+            fputc('@', out);
+            c = right;
+            fputc(c, out);//prints right leaf node
+            (*serial)++;
+        }
     }
-    bs_recursive((bdd_nodes + right), out, serial);
+    else
+        bs_recursive((bdd_nodes + right), out, serial);
 
-    int index = bdd_nodes-node;
-    if((bdd_index_map + index) == 0){       //check if node already has serial number
+    int index = node - bdd_nodes;
+    if(*(bdd_index_map + index) == 0){       //check if node already has serial number
         *(bdd_index_map + index) = *serial;
         (*serial)++;
-    }
-    int level = node -> level;
-    level += 64;
-    left = *(bdd_index_map + left);
-    right = *(bdd_index_map + right);
 
-    fprintf(out, "%c%c%c", level+'@', left, right);
+        int level = node -> level;
+        level += 64;
+        left = *(bdd_index_map + left);
+        right = *(bdd_index_map + right);
+
+        fputc(level, out);
+        int mask = 0xff;
+        int rightmost = 0;
+        for(int i = 0; i < 4; i++){
+            rightmost = left & mask;
+            fputc(rightmost, out);
+            left = left >> 8;
+        }
+        for(int i = 0; i < 4; i++){
+            rightmost = right & mask;
+            fputc(rightmost, out);
+            right = right >> 8;
+        }
+    }
 }
 
 BDD_NODE *bdd_deserialize(FILE *in) {
