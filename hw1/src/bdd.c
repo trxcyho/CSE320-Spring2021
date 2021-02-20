@@ -145,7 +145,13 @@ int bfr_recursion_helper(int wstart, int wend, int hstart, int hend, int w, int 
 }
 
 void bdd_to_raster(BDD_NODE *node, int w, int h, unsigned char *raster) {
-    // TO BE IMPLEMENTED
+    int arrayIndex = 0;
+    for(int i = 0; i < h; i++){
+        for (int j = 0; j < w; j++){
+            *(raster + arrayIndex) = bdd_apply(node, i, j);
+            arrayIndex++;
+        }
+    }
 }
 
 int bdd_serialize(BDD_NODE *node, FILE *out) {
@@ -250,8 +256,26 @@ int bd_helper(int *serial, FILE *in){
 }
 
 unsigned char bdd_apply(BDD_NODE *node, int r, int c) {
-    // TO BE IMPLEMENTED
-    return 0;
+    if (node == NULL)
+        return -1;
+    int level, path, child;
+    while(node - bdd_nodes > 255){
+        level = node -> level;
+        if (level %2 == 0){
+            level = (level -2)/2;
+            path = (r >> level) & 1;
+        }
+        else{
+            level = (level - 1)/2;
+            path = (c >> level) & 1;
+        }
+        if (path == 0)
+            child = node -> left;
+        else
+            child = node -> right;
+        node = bdd_nodes+ child;
+    }
+    return node - bdd_nodes;
 }
 
 BDD_NODE *bdd_map(BDD_NODE *node, unsigned char (*func)(unsigned char)) {

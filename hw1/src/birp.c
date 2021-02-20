@@ -29,7 +29,14 @@ int pgm_to_birp(FILE *in, FILE *out) {
 }
 
 int birp_to_pgm(FILE *in, FILE *out) {
-    // TO BE IMPLEMENTED
+    int width = 0;
+    int height = 0;
+    BDD_NODE *node = img_read_birp(in, &width, &height);
+    if (node == NULL)
+        return -1;
+    bdd_to_raster(node, width, height, raster_data);
+    if(img_write_pgm(raster_data, width, height, out) == 0)
+        return 0;
     return -1;
 }
 
@@ -76,8 +83,34 @@ int pgm_to_ascii(FILE *in, FILE *out) {
 }
 
 int birp_to_ascii(FILE *in, FILE *out) {
-    // TO BE IMPLEMENTED
-    return -1;
+    int width = 0;
+    int height = 0;
+    BDD_NODE *node = img_read_birp(in, &width, &height);
+    if (node == NULL)
+        return -1;
+    bdd_to_raster(node, width, height, raster_data);
+
+    int value = 0;
+    char print;
+    for(int i = 0; i< height; i++){
+        for(int j = 0; j <width; j++){
+            value = *(raster_data + (i*width) +j);
+            if(value > 255 || value < 0)
+                return -1;
+            if(value < 64)
+                print = ' ';
+            else if(value < 128)
+                print = '.';
+            else if(value < 192)
+                print = '*';
+            else if(value < 256)
+                print = '@';
+            fputc(print, out);
+        }
+        print = '\n';
+        fputc(print, out);
+    }
+    return 0;
 }
 
 /**
