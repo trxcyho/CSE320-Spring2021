@@ -222,7 +222,9 @@ void bs_recursive(BDD_NODE *node, FILE *out, int *serial){
 BDD_NODE *bdd_deserialize(FILE *in) {
     // return NULL when file format is incorrect
     int serial = 1;
+    // debug("%d", serial);
     int index = bd_helper(&serial, in);
+    // debug("index of bd helper: %d", index);
     if (index < 0)
         return NULL;
     return bdd_nodes + index;
@@ -230,10 +232,11 @@ BDD_NODE *bdd_deserialize(FILE *in) {
 
 int bd_helper(int *serial, FILE *in){
     int c= 0, left = 0, right = 0, index = 0;
+    c = fgetc(in);
     while(c != EOF) {
-        c = fgetc(in);
         if(c == '@'){
-            fread(&c, 4, 1, in);
+            c = fgetc(in);
+            // debug("%x", c);
             if(c > 255 || c < 0)
                 return -1;
             *(bdd_index_map + (*serial)) = c;
@@ -253,7 +256,11 @@ int bd_helper(int *serial, FILE *in){
             left = *(bdd_index_map + left);
             right = *(bdd_index_map + right);
             index = bdd_lookup(c, left, right);
+            //put index into index map
+            *(bdd_index_map + (*serial)) = index;
+            (*serial)++;
         }
+        c = fgetc(in);
     }
     return index;
 }
@@ -342,7 +349,7 @@ BDD_NODE *bdd_zoom(BDD_NODE *node, int level, int factor) {
         BDD_NODE *rightNode = bdd_nodes + (node -> right);
         int node_level = node -> level;
         //increase level by 2k (k doubling of row and column dimension)
-        //node_level *= factor
+        level = level * 2 * factor;
         int leftIndex = (bdd_zoom(leftNode, level -1, factor)) - bdd_nodes;
         int rightIndex = (bdd_zoom(rightNode, level -1, factor)) - bdd_nodes;
         int newIndex = bdd_lookup(node_level, leftIndex, rightIndex);

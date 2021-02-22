@@ -21,11 +21,11 @@ int main(int argc, char **argv)
 	//testing part 1
 	// if(validargs(argc, argv) == -1){
 	// 	printf("INVALID\n");
-	// 	printf("%d\n", global_options);
+	// 	printf("0x%x\n", global_options);
 	// }
 	// else{
 	// 	printf("VALID\n");
-	// 	printf("%d\n", global_options);
+	// 	printf("0x%x\n", global_options);
 	// }
 
 	//end of testing
@@ -65,12 +65,10 @@ int main(int argc, char **argv)
     	if(birp_to_pgm(stdin, stdout) == 0)
     		return EXIT_SUCCESS;
     }
-    if (global_options == 0x22){
+    if ((global_options & 0xff) == 0x22){
     	if (birp_to_birp(stdin, stdout) == 0)
     		return EXIT_SUCCESS;
     }
-
-
 
     return EXIT_FAILURE;
 }

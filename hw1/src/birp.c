@@ -46,6 +46,40 @@ int birp_to_birp(FILE *in, FILE *out) {
     BDD_NODE *node = img_read_birp(in, &width, &height);
     if (node == NULL)
         return -1;
+    //read global options and see what tranformations
+    int number = (global_options & 0xff0000) >> 16;
+    int transform = (global_options & 0xf00) >> 8;
+    if (transform == 0)
+        goto btb_writing;
+    if(transform == 1){
+        //do negatoin with bdd_map
+        // node = bdd_map(node, function); //-1 function
+        if(node == NULL)
+            return -1;
+    }
+    else if(transform == 2){
+        //do threshold with bdd_map
+        //use number
+        // node = bdd_map (node, function); //is function the number?
+        if(node == NULL)
+            return -1;
+    }
+    else if(transform == 3){
+        //do zoom w/ bdd_zoom
+        //use number
+        node = bdd_zoom(node, (node -> level), number);
+        if(node == NULL)
+            return -1;
+    }
+    else {
+        //do rotate w/ bdd_rotate
+        node = bdd_rotate(node, (node -> level));
+        if(node == NULL)
+            return -1;
+    }
+
+
+    btb_writing:
     //img_write_birp
     img_write_birp(node, width, height, out);
     return 0;
