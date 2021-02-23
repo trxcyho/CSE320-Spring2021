@@ -11,6 +11,9 @@
 int strcompare(char* str1, char* str2, int size);
 int strsize(char* str);
 int strToNum(char *str);
+unsigned char bd_negation(unsigned char uc);
+unsigned char bd_threshold(unsigned char uc);
+
 
 int pgm_to_birp(FILE *in, FILE *out) {
     int width = 0;
@@ -53,14 +56,14 @@ int birp_to_birp(FILE *in, FILE *out) {
         goto btb_writing;
     if(transform == 1){
         //do negatoin with bdd_map
-        // node = bdd_map(node, function); //-1 function
+        node = bdd_map(node, &bd_negation); //-1 function
         if(node == NULL)
             return -1;
     }
     else if(transform == 2){
         //do threshold with bdd_map
         //use number
-        // node = bdd_map (node, function); //is function the number?
+        node = bdd_map (node, &bd_threshold); //is function the number?
         if(node == NULL)
             return -1;
     }
@@ -83,6 +86,17 @@ int birp_to_birp(FILE *in, FILE *out) {
     //img_write_birp
     img_write_birp(node, width, height, out);
     return 0;
+}
+
+unsigned char bd_negation(unsigned char uc){
+    return ~uc;
+}
+
+unsigned char bd_threshold(unsigned char uc){
+    int threshold_value = (global_options & 0xff0000) >> 16;
+    if(uc < threshold_value)
+        return uc;
+    return 255;
 }
 
 int pgm_to_ascii(FILE *in, FILE *out) {
