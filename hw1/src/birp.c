@@ -49,6 +49,10 @@ int birp_to_birp(FILE *in, FILE *out) {
     BDD_NODE *node = img_read_birp(in, &width, &height);
     if (node == NULL)
         return -1;
+
+    for(int i = 0; i < BDD_NODES_MAX; i ++)
+        *(bdd_index_map + i) = 0;
+
     //read global options and see what tranformations
     int number = (global_options & 0xff0000) >> 16;
     int transform = (global_options & 0xf00) >> 8;
@@ -81,7 +85,6 @@ int birp_to_birp(FILE *in, FILE *out) {
             return -1;
     }
 
-
     btb_writing:
     //img_write_birp
     img_write_birp(node, width, height, out);
@@ -94,7 +97,7 @@ unsigned char bd_negation(unsigned char uc){
 
 unsigned char bd_threshold(unsigned char uc){
     int threshold_value = (global_options & 0xff0000) >> 16;
-    if(uc < threshold_value)
+    if(uc > threshold_value)
         return uc;
     return 255;
 }

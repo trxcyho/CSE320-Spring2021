@@ -42,6 +42,24 @@ int main(int argc, char **argv)
 	// x = bdd_lookup(5, 100, 24);
 	// printf("%i\n", x);
 
+	// unsigned char input1[] = {4, 8 ,4, 8}; // Should return 256 because only one node is made
+	// BDD_NODE *x = bdd_from_raster(2, 2, input1);
+	// // bdd_from_raster(2,2,input1); //256
+	// debug("%ld\n", x - bdd_nodes);
+
+
+ //    unsigned char input2[] = {4,2,12,255};
+ //    x = bdd_from_raster(2,2,input2); //259
+ //    debug("%ld\n", x - bdd_nodes);
+
+ //    unsigned char input3[] = {4,2,36,49};
+ //    x = bdd_from_raster(2,2,input3); //261
+ //    debug("%ld\n", x - bdd_nodes);
+
+ //    unsigned char input4[] = {4,2,4,8};
+ //    x = bdd_from_raster(2,2,input4); //262
+ //    debug("%ld\n", x - bdd_nodes);
+
 
     if(validargs(argc, argv))
         USAGE(*argv, EXIT_FAILURE);

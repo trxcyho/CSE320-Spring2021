@@ -299,13 +299,18 @@ BDD_NODE *bdd_map(BDD_NODE *node, unsigned char (*func)(unsigned char)) {
         int newNodeIndex = bdd_lookup((node -> level), (lchild - bdd_nodes), (rchild -bdd_nodes));
         return bdd_nodes + newNodeIndex;
     }
-    int index = func(node - bdd_nodes);
-    return bdd_nodes + index;
+    else{
+        int index = func(node - bdd_nodes);
+        return bdd_nodes + index;
+    }
 }
 
 BDD_NODE *bdd_rotate(BDD_NODE *node, int level) {
     if(node == NULL)
         return NULL;
+    if(node-bdd_nodes < 256)
+        return node;
+
     BDD_NODE *left = bdd_nodes + (node -> left);
     BDD_NODE *right = bdd_nodes + (node -> right);
     BDD_NODE *temp_node;
@@ -313,28 +318,46 @@ BDD_NODE *bdd_rotate(BDD_NODE *node, int level) {
         temp_node = left;
         left = right;
         right = temp_node;
+
+        node = bdd_nodes + bdd_lookup(level, (left - bdd_nodes), (right - bdd_nodes));
     }
     else {
-        BDD_NODE *top_left = bdd_nodes + (left -> left);
-        BDD_NODE *top_right = bdd_nodes + (left -> right);
-        BDD_NODE *bottom_left = bdd_nodes + (right -> left);
-        BDD_NODE *bottom_right = bdd_nodes + (right -> right);
-        if((top_left - bdd_nodes) < 256 && (top_right - bdd_nodes) < 256 && (bottom_left - bdd_nodes) < 256 && (bottom_right - bdd_nodes) < 256)
-            return node;
-        else{
-            //rotating nodes itself
-            top_left = bdd_rotate(top_left, level -2);
-            top_right = bdd_rotate(top_right, level -2);
-            bottom_left = bdd_rotate(bottom_left, level -2);
-            bottom_right = bdd_rotate(bottom_right, level -2);
-            //rotating this node
-            temp_node = top_left;
-            top_left = top_right;
-            top_right = bottom_right;
-            bottom_right = bottom_left;
-            bottom_left = temp_node;
-            return node;
+        BDD_NODE *top_left;
+        BDD_NODE *top_right;
+        if(left - bdd_nodes < 256){
+            top_left = left;
+            top_right = left;
         }
+        else{
+            top_left = bdd_nodes + (left -> left);
+            top_right = bdd_nodes + (left -> right);
+        }
+        BDD_NODE *bottom_left;
+        BDD_NODE *bottom_right;
+        if(right - bdd_nodes < 256){
+            bottom_left = right;
+            bottom_right = right;
+        } else {
+            bottom_left = bdd_nodes + (right -> left);
+            bottom_right = bdd_nodes + (right -> right);
+        }
+
+        //rotating nodes itself
+        top_left = bdd_rotate(top_left, level -2);
+        top_right = bdd_rotate(top_right, level -2);
+        bottom_left = bdd_rotate(bottom_left, level -2);
+        bottom_right = bdd_rotate(bottom_right, level -2);
+        //rotating this node
+        temp_node = top_left;
+        top_left = top_right;
+        top_right = bottom_right;
+        bottom_right = bottom_left;
+        bottom_left = temp_node;
+
+        int topindex = bdd_lookup(level -1, (top_left - bdd_nodes), (top_right - bdd_nodes));
+        int bottomindex = bdd_lookup(level -1, (bottom_left - bdd_nodes), (bottom_right - bdd_nodes));
+        return bdd_lookup(level, topindex, bottomindex) + bdd_nodes;
+
     }
     return node;
 }
@@ -349,7 +372,7 @@ BDD_NODE *bdd_zoom(BDD_NODE *node, int level, int factor) {
         BDD_NODE *rightNode = bdd_nodes + (node -> right);
         int node_level = node -> level;
         //increase level by 2k (k doubling of row and column dimension)
-        level = level * 2 * factor;
+        node_level = node_level + (2 * factor);
         int leftIndex = (bdd_zoom(leftNode, level -1, factor)) - bdd_nodes;
         int rightIndex = (bdd_zoom(rightNode, level -1, factor)) - bdd_nodes;
         int newIndex = bdd_lookup(node_level, leftIndex, rightIndex);
@@ -358,21 +381,22 @@ BDD_NODE *bdd_zoom(BDD_NODE *node, int level, int factor) {
     else{
         int decrease_factor = 256 - factor;
         //when reach a node with level 2k, decrease b 2k amount to replace with single leaf node
-        BDD_NODE *leftNode = bdd_nodes + (node -> left);
-        BDD_NODE *rightNode = bdd_nodes + (node -> right);
-        int node_level = node -> level;
-        //what is the stopping case? level less than 2k?
-        // if(node_level % (2 * decrease_factor) != 0){
-        //     BDD_NODE *leftNode = bdd_zoom(leftNode, level -1, factor);
-        //     BDD_NODE *rightNode = bdd_zoom(rightNode, level -1, factor);
-        // }
-        // else{
-        //     //decrease the level by 2k and return new node
-        //     int leftIndex = (bdd_zoom(leftNode, level -1, factor)) - bdd_nodes;
-        //     int rightIndex = (bdd_zoom(rightNode, level -1, factor)) - bdd_nodes;
-        //     int newIndex = bdd_lookup(node_level, leftIndex, rightIndex);
-        //     return bdd_nodes + newIndex;
-        // }
+        int levelOfNode = node -> level;
+        if(levelOfNode - (2* decrease_factor) <= 0){
+            if(bdd_nodes - node == 0)
+                return node;
+            else
+                return bdd_nodes + 255;
+        }
+        else{
+            BDD_NODE *leftNode = bdd_nodes + (node -> left);
+            BDD_NODE *rightNode = bdd_nodes + (node -> right);
+            levelOfNode = levelOfNode - (2 * decrease_factor);
+            int leftIndex = (bdd_zoom(leftNode, level -1, factor)) - bdd_nodes;
+            int rightIndex = (bdd_zoom(rightNode, level -1, factor)) - bdd_nodes;
+            int newIndex = bdd_lookup(levelOfNode, leftIndex, rightIndex);
+            return bdd_nodes + newIndex;
+        }
     }
     return NULL;
 }
