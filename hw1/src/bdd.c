@@ -149,6 +149,7 @@ void bdd_to_raster(BDD_NODE *node, int w, int h, unsigned char *raster) {
     for(int i = 0; i < h; i++){
         for (int j = 0; j < w; j++){
             *(raster + arrayIndex) = bdd_apply(node, i, j);
+            // debug("%d\n", bdd_apply(node, i, j));
             arrayIndex++;
         }
     }
@@ -166,55 +167,66 @@ int bdd_serialize(BDD_NODE *node, FILE *out) {
 }
 
 void bs_recursive(BDD_NODE *node, FILE *out, int *serial){
-    int left = node -> left;
-    int right = node -> right;
-    char c = 0;
+    if (node - bdd_nodes > 255){
+        int left = node -> left;
+        int right = node -> right;
+        char c = 0;
 
-    if(left < 256){
-        if(*(bdd_index_map + left) == 0){
-            *(bdd_index_map + left) = *serial;  //puts serial number in index map
+        if(left < 256){
+            if(*(bdd_index_map + left) == 0){
+                *(bdd_index_map + left) = *serial;  //puts serial number in index map
+                fputc('@', out);
+                c = left;
+                fputc(c, out);//prints left leaf node
+                (*serial)++; //is reference needed? is this valid?
+            }
+        }
+        else
+            bs_recursive((bdd_nodes+left), out, serial);
+        if(right < 256){
+            if(*(bdd_index_map + right) == 0){
+                *(bdd_index_map + right) = *serial;
+                fputc('@', out);
+                c = right;
+                fputc(c, out);//prints right leaf node
+                (*serial)++;
+            }
+        }
+        else
+            bs_recursive((bdd_nodes + right), out, serial);
+
+        int index = node - bdd_nodes;
+        if(*(bdd_index_map + index) == 0){       //check if node already has serial number
+            *(bdd_index_map + index) = *serial;
+            (*serial)++;
+
+            int level = node -> level;
+            level += 64;
+            left = *(bdd_index_map + left);
+            right = *(bdd_index_map + right);
+
+            fputc(level, out);
+            int mask = 0xff;
+            int rightmost = 0;
+            for(int i = 0; i < 4; i++){
+                rightmost = left & mask;
+                fputc(rightmost, out);
+                left = left >> 8;
+            }
+            for(int i = 0; i < 4; i++){
+                rightmost = right & mask;
+                fputc(rightmost, out);
+                right = right >> 8;
+            }
+        }
+    }
+    else{
+        if(*(bdd_index_map + (node - bdd_nodes)) == 0){
+            *(bdd_index_map + (node - bdd_nodes)) = *serial;  //puts serial number in index map
             fputc('@', out);
-            c = left;
+            char c = (node - bdd_nodes);
             fputc(c, out);//prints left leaf node
             (*serial)++; //is reference needed? is this valid?
-        }
-    }
-    else
-        bs_recursive((bdd_nodes+left), out, serial);
-    if(right < 256){
-        if(*(bdd_index_map + right) == 0){
-            *(bdd_index_map + right) = *serial;
-            fputc('@', out);
-            c = right;
-            fputc(c, out);//prints right leaf node
-            (*serial)++;
-        }
-    }
-    else
-        bs_recursive((bdd_nodes + right), out, serial);
-
-    int index = node - bdd_nodes;
-    if(*(bdd_index_map + index) == 0){       //check if node already has serial number
-        *(bdd_index_map + index) = *serial;
-        (*serial)++;
-
-        int level = node -> level;
-        level += 64;
-        left = *(bdd_index_map + left);
-        right = *(bdd_index_map + right);
-
-        fputc(level, out);
-        int mask = 0xff;
-        int rightmost = 0;
-        for(int i = 0; i < 4; i++){
-            rightmost = left & mask;
-            fputc(rightmost, out);
-            left = left >> 8;
-        }
-        for(int i = 0; i < 4; i++){
-            rightmost = right & mask;
-            fputc(rightmost, out);
-            right = right >> 8;
         }
     }
 }
@@ -262,13 +274,15 @@ int bd_helper(int *serial, FILE *in){
         }
         c = fgetc(in);
     }
-    return index;
+    return *(bdd_index_map + (*serial - 1));
 }
 
 unsigned char bdd_apply(BDD_NODE *node, int r, int c) {
     if (node == NULL)
         return -1;
     int level, path, child;
+    // if (node - bdd_nodes < 256)
+
     while(node - bdd_nodes > 255){
         level = node -> level;
         if (level %2 == 0){

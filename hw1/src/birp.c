@@ -67,7 +67,7 @@ int birp_to_birp(FILE *in, FILE *out) {
     else if(transform == 2){
         //do threshold with bdd_map
         //use number
-        node = bdd_map (node, &bd_threshold); //is function the number?
+        node = bdd_map (node, &bd_threshold);
         if(node == NULL)
             return -1;
     }
@@ -87,8 +87,9 @@ int birp_to_birp(FILE *in, FILE *out) {
 
     btb_writing:
     //img_write_birp
-    img_write_birp(node, width, height, out);
-    return 0;
+    if (img_write_birp(node, width, height, out) == 0)
+        return 0;
+    return -1;
 }
 
 unsigned char bd_negation(unsigned char uc){
@@ -97,7 +98,7 @@ unsigned char bd_negation(unsigned char uc){
 
 unsigned char bd_threshold(unsigned char uc){
     int threshold_value = (global_options & 0xff0000) >> 16;
-    if(uc > threshold_value)
+    if(uc < threshold_value)
         return uc;
     return 255;
 }
