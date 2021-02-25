@@ -15,7 +15,6 @@
  */
 #define LEFT(np, l) ((l) > (np)->level ? (np) : bdd_nodes + (np)->left)
 #define RIGHT(np, l) ((l) > (np)->level ? (np) : bdd_nodes + (np)->right)
-int bdd_node_table_counter = 256;
 
 int nodeEqual(BDD_NODE *node, char level, int left, int right);
 int hashIndex(int level, int left, int right);
@@ -51,14 +50,23 @@ int bdd_lookup(int level, int left, int right) {
             index = 0;
     }
 
+    //find free space
+    BDD_NODE *new_node;
+    for(int i = 256; i < BDD_NODES_MAX; i++){
+        new_node = bdd_nodes + i;
+        if(new_node -> level == 0)
+            goto bd_create_node;
+    }
+    return -1;
+
+    bd_create_node:
     //create node
-    BDD_NODE *new_node = bdd_nodes + bdd_node_table_counter;
     new_node -> level = level;
     new_node -> left = left;
     new_node -> right = right;
 
     *(bdd_hash_map + index) = new_node;
-    return bdd_node_table_counter++;
+    return new_node - bdd_nodes;
 }
 
 int hashIndex(int level, int left, int right){
