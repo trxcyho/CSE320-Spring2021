@@ -53,6 +53,8 @@ int birp_to_birp(FILE *in, FILE *out) {
     for(int i = 0; i < BDD_NODES_MAX; i ++)
         *(bdd_index_map + i) = 0;
 
+    int size = 0x1 << (bdd_min_level(width, height)/2);
+
     //read global options and see what tranformations
     int number = (global_options & 0xff0000) >> 16;
     int transform = (global_options & 0xf00) >> 8;
@@ -77,12 +79,33 @@ int birp_to_birp(FILE *in, FILE *out) {
         node = bdd_zoom(node, (node -> level), number);
         if(node == NULL)
             return -1;
+        if(number > 16){ //zoom out
+            int add = 0;
+            if(width % (1<<(256-number)) != 0){
+                add++;
+            }
+            width = (width >> (256-number)) + add;
+            if(height % (1<<(256-number)) != 0){
+                add = 1;
+            }
+            else
+                add = 0;
+            height = (height >> (256 - number)) + add;
+        }
+        else{
+            width = width << number;
+            height = height << number;
+        }
     }
     else {
         //do rotate w/ bdd_rotate
         node = bdd_rotate(node, (node -> level));
         if(node == NULL)
             return -1;
+        if(width != size && height != size){
+            width = size;
+            height = size;
+        }
     }
 
     btb_writing:
@@ -327,6 +350,7 @@ int validargs(int argc, char **argv) {
                 value *= -1;
                 value = value <<24;
                 value = value >> 8;
+                value = (value & 0xff0000);
                 global_options = global_options | value;
                 global_options = global_options | 0x300;
                 add_flag = 1;

@@ -336,12 +336,13 @@ BDD_NODE *bdd_rotate(BDD_NODE *node, int level) {
     BDD_NODE *left = bdd_nodes + (node -> left);
     BDD_NODE *right = bdd_nodes + (node -> right);
     BDD_NODE *temp_node;
-    if((node -> level) % 2 != 0){
+    int correctlevel = node -> level;
+    if(correctlevel % 2 != 0){
         temp_node = left;
         left = right;
         right = temp_node;
 
-        node = bdd_nodes + bdd_lookup(level, (left - bdd_nodes), (right - bdd_nodes));
+        node = bdd_nodes + bdd_lookup(correctlevel + 1, (left - bdd_nodes), (right - bdd_nodes));
     }
     else {
         BDD_NODE *top_left;
@@ -364,11 +365,20 @@ BDD_NODE *bdd_rotate(BDD_NODE *node, int level) {
             bottom_right = bdd_nodes + (right -> right);
         }
 
+        if((left-> level) != correctlevel -1){
+            top_left = left;
+            top_right = left;
+        }
+        if((right -> level) != correctlevel -1){
+            bottom_left = right;
+            bottom_right = right;
+        }
+
         //rotating nodes itself
-        top_left = bdd_rotate(top_left, level -2);
-        top_right = bdd_rotate(top_right, level -2);
-        bottom_left = bdd_rotate(bottom_left, level -2);
-        bottom_right = bdd_rotate(bottom_right, level -2);
+        top_left = bdd_rotate(top_left, correctlevel -2);
+        top_right = bdd_rotate(top_right, correctlevel -2);
+        bottom_left = bdd_rotate(bottom_left, correctlevel -2);
+        bottom_right = bdd_rotate(bottom_right, correctlevel -2);
         //rotating this node
         temp_node = top_left;
         top_left = top_right;
@@ -376,10 +386,9 @@ BDD_NODE *bdd_rotate(BDD_NODE *node, int level) {
         bottom_right = bottom_left;
         bottom_left = temp_node;
 
-        int topindex = bdd_lookup(level -1, (top_left - bdd_nodes), (top_right - bdd_nodes));
-        int bottomindex = bdd_lookup(level -1, (bottom_left - bdd_nodes), (bottom_right - bdd_nodes));
-        return bdd_lookup(level, topindex, bottomindex) + bdd_nodes;
-
+        int topindex = bdd_lookup(correctlevel -1, (top_left - bdd_nodes), (top_right - bdd_nodes));
+        int bottomindex = bdd_lookup(correctlevel -1, (bottom_left - bdd_nodes), (bottom_right - bdd_nodes));
+        return bdd_lookup(correctlevel, topindex, bottomindex) + bdd_nodes;
     }
     return node;
 }
