@@ -56,7 +56,7 @@ int birp_to_birp(FILE *in, FILE *out) {
     int size = 0x1 << (bdd_min_level(width, height)/2);
 
     //read global options and see what tranformations
-    int number = (global_options & 0xff0000) >> 16;
+    char number = (global_options & 0xff0000) >> 16;
     int transform = (global_options & 0xf00) >> 8;
     if (transform == 0)
         goto btb_writing;
@@ -79,18 +79,18 @@ int birp_to_birp(FILE *in, FILE *out) {
         node = bdd_zoom(node, (node -> level), number);
         if(node == NULL)
             return -1;
-        if(number > 16){ //zoom out
+        if(number < 0){ //zoom out
             int add = 0;
-            if(width % (1<<(256-number)) != 0){
+            if(width % (1<<(-number)) != 0){
                 add++;
             }
-            width = (width >> (256-number)) + add;
-            if(height % (1<<(256-number)) != 0){
+            width = (width >> (-number)) + add;
+            if(height % (1<<(-number)) != 0){
                 add = 1;
             }
             else
                 add = 0;
-            height = (height >> (256 - number)) + add;
+            height = (height >> (-number)) + add;
         }
         else{
             width = width << number;

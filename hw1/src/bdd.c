@@ -396,7 +396,9 @@ BDD_NODE *bdd_rotate(BDD_NODE *node, int level) {
 BDD_NODE *bdd_zoom(BDD_NODE *node, int level, int factor) {
     if(node == NULL)
         return NULL;
-    if(factor <= 16){
+    if(node - bdd_nodes < 256)
+        return node;
+    if(factor >= 0){
         if((node - bdd_nodes) < 256)
             return node;
         BDD_NODE *leftNode = bdd_nodes + (node -> left);
@@ -410,10 +412,9 @@ BDD_NODE *bdd_zoom(BDD_NODE *node, int level, int factor) {
         return bdd_nodes + newIndex;
     }
     else{
-        int decrease_factor = 256 - factor;
         //when reach a node with level 2k, decrease b 2k amount to replace with single leaf node
         int levelOfNode = node -> level;
-        if(levelOfNode - (2* decrease_factor) <= 0){
+        if(levelOfNode + (2*factor) <= 0){
             if(bdd_nodes - node == 0)
                 return node;
             else
@@ -422,7 +423,7 @@ BDD_NODE *bdd_zoom(BDD_NODE *node, int level, int factor) {
         else{
             BDD_NODE *leftNode = bdd_nodes + (node -> left);
             BDD_NODE *rightNode = bdd_nodes + (node -> right);
-            levelOfNode = levelOfNode - (2 * decrease_factor);
+            levelOfNode = levelOfNode + (2 * factor);
             int leftIndex = (bdd_zoom(leftNode, level -1, factor)) - bdd_nodes;
             int rightIndex = (bdd_zoom(rightNode, level -1, factor)) - bdd_nodes;
             int newIndex = bdd_lookup(levelOfNode, leftIndex, rightIndex);
