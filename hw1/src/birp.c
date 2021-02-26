@@ -206,6 +206,11 @@ int birp_to_ascii(FILE *in, FILE *out) {
 int validargs(int argc, char **argv) {
     global_options = 0;
 
+    if(argc == 1){
+        global_options = 0x22;
+        return 0;
+    }
+
     if(argc <= 1 || argc > 7) //max args is 7
         return -1;
     //read the second arg and make sure size is 2
