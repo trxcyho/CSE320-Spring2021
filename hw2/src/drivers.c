@@ -212,7 +212,8 @@ static void output_move_generic(dr,d)
      depl *d;
 #endif
 {
-  char ligne[128];
+  //TODO: comment out ligne array
+  // char ligne[128];
   char themove[128];
   char thepiece[16];
   char debcol[16];
@@ -225,11 +226,12 @@ static void output_move_generic(dr,d)
   int ambigue = FALSE ;
   int ambigueline, ambiguecols;
 
-  ligne[0] = themove[0] = thepiece[0] = '\0';
+  //TODO: ligne[0] = '\0';
+  themove[0] = thepiece[0] = '\0';
   frommove[0] = tomove[0] = lie[0] = prom[0] = '\0';
 
   //TODO: printf to make ligne used
-  printf("%c\n", ligne[0]);
+  // printf("%c\n", ligne[0]);
 
   if (dr->type == D_TEX)
     (void) sprintf(captsymb,"%s", FigCapt);
