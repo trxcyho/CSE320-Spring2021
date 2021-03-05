@@ -386,7 +386,7 @@ static int find_keyword(tab, nbentry,defaut,key,warning)
   int i ;
 
   for(i=0; (i< nbentry) ;i++)
-    if (strcmp(tab[i],key))
+    if (strcmp(tab[i],key) == 0)
       return(i);
 
   /* we failed to find the keyword */
@@ -1854,7 +1854,7 @@ int notation_main(argc,argv)
     output_board(dr,tos);
     fatal((stderr,"\nToo many errors"));
   }
-
+  yylex_destroy();
   /* terminates output files */
   output_end(dr);
 
