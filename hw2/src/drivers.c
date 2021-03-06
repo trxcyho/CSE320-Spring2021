@@ -230,9 +230,6 @@ static void output_move_generic(dr,d)
   themove[0] = thepiece[0] = debcol[0] = '\0';
   frommove[0] = tomove[0] = lie[0] = prom[0] = '\0';
 
-  //TODO: printf to make ligne used
-  // printf("%c\n", ligne[0]);
-
   if (dr->type == D_TEX)
     (void) sprintf(captsymb,"%s", FigCapt);
   else

@@ -1656,6 +1656,7 @@ int parse_options(argc,argv)
 	  (void) fprintf (stderr,"can't open %s output file\n",argv[narg]);
 	  (void) fprintf (stderr,"assume stdout for output\n");
 	}
+  break;//TODO: put a break so it doesn't go to case 'e'
       case 'e':
 	if  ((narg+1) >= argc )
 	  fatal((stderr,"missing argument to %s option",cp));
@@ -1854,7 +1855,9 @@ int notation_main(argc,argv)
     output_board(dr,tos);
     fatal((stderr,"\nToo many errors"));
   }
+
   yylex_destroy();
+
   /* terminates output files */
   output_end(dr);
 
