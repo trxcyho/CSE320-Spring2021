@@ -1850,13 +1850,15 @@ int notation_main(argc,argv)
   if ((count == 0) && !error_flag)
     output_board(dr,tos);
 
+  free(theplay); //TODO: free the play
+
   if (error_flag) {
     error((stderr,"\nLast valid position:\n"));
     output_board(dr,tos);
     fatal((stderr,"\nToo many errors"));
   }
 
-  yylex_destroy();
+  yylex_destroy();//TODO: free from yylex_destroy
 
   /* terminates output files */
   output_end(dr);
