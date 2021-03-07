@@ -42,13 +42,13 @@ all: setup $(BIND)/$(EXEC) $(BIND)/$(TEST_EXEC)
 debug: CFLAGS += $(DFLAGS) $(PRINT_STAMENTS) $(COLORF)
 debug: all
 
-setup: $(BIND) $(BLDD) lexer.c
+setup: $(BIND) $(BLDD) $(SRCD)/lexer.c
 $(BIND):
 	mkdir -p $(BIND)
 $(BLDD):
 	mkdir -p $(BLDD)
-lexer.c: $(SRCD)/lexer.l $(INCD)/chesstype.h
-	$(LEX) -t $(SRCD)/lexer.l > $(SRCD)/lexer.c
+#lexer.c: $(SRCD)/lexer.l $(INCD)/chesstype.h
+#	$(LEX) -t $(SRCD)/lexer.l > $(SRCD)/lexer.c
 
 $(BIND)/$(EXEC): $(ALL_OBJF)
 	$(CC) $^ -o $@ $(LIBS)
