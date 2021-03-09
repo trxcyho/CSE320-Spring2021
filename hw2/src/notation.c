@@ -1503,6 +1503,7 @@ int parse_keyword(token,text)
     putc ('\n', dr->outfile);
     break;
   case KNULL:
+    break;
   default:
     fprintf(stderr,"unknown keyword %s\n",token);
     break;
