@@ -763,7 +763,8 @@ void exit_variation()
     output_variation(dr,VARIATION_OUT);
 
     l--;
-    free(m);
+    // free(m);
+    free(tos);
     m = stack[l].d ;
     tos = stack[l].b ;
 
@@ -1850,7 +1851,7 @@ int notation_main(argc,argv)
   if ((count == 0) && !error_flag)
     output_board(dr,tos);
 
-  // yylex_destroy();
+  yylex_destroy();
 
 
   if (error_flag) {
@@ -1859,10 +1860,10 @@ int notation_main(argc,argv)
     fatal((stderr,"\nToo many errors"));
   }
 
-  // free(tos);
-  // free_move_list(m);
-  // free(theplay -> chain);
-  // free(theplay);
+  free(tos);//theplay->initial
+  free_move_list(theplay->chain);
+  free(theplay -> chain);
+  free(theplay);
 
 
   /* terminates output files */
@@ -1871,7 +1872,7 @@ int notation_main(argc,argv)
   /* close files */
   close_files();
 
-  // free(dr);
+  free(dr);
   /* exit properly */
   return 0;
 }
