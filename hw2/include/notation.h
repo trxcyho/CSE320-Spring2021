@@ -57,8 +57,8 @@
 #endif
 
 
-/* a convenient way  to get a value for NUM_COMMENT 
-   look at GNU-CC source, it's full of *neat* tricks 
+/* a convenient way  to get a value for NUM_COMMENT
+   look at GNU-CC source, it's full of *neat* tricks
    */
 
 #define CHESSSYMB(LET,LASC,SASC,TEX,PS,ENG,FRA) LET,
@@ -69,7 +69,7 @@ enum com_code {
   };
 #undef CHESSSYMB
 
-#define NUM_COM_CODE ((int) LAST_UNUSED_NUM_COM_CODE) 
+#define NUM_COM_CODE ((int) LAST_UNUSED_NUM_COM_CODE)
 
 /* ---- MISC TABLES ---- */
 
@@ -103,7 +103,7 @@ extern FILE * infile;
 #define error(A) (void) fprintf A , error_flag = TRUE , (void)fflush(stderr)
 
 /* Output an error message and set the error flag */
-#define message(A) (void) fprintf A 
+#define message(A) (void) fprintf A
 
 #define MALLOC(T)  (T *)malloc((unsigned)sizeof(T))
 #define ALLOCP(P)  if ( (P) == NULL ) { fatal((stderr,"malloc failed")) ; };
@@ -211,11 +211,13 @@ extern void init_parse(/*depl *m*/);
 extern int parse_options(int argc, char *argv[]);
 extern void close_files(void);
 extern int associe_traduction(char **table, int langage);
+extern int yylex_destroy(/*void*/);
 
 #else
 extern int parse_options(/*int argc, char *argv[]*/);
 extern void close_files(/*void*/);
 extern int associe_traduction(/*char **table, int langage*/);
+extern int yylex_destroy(/*void*/);
 
 #endif
 

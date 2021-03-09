@@ -501,8 +501,8 @@ void init_move(m)
      depl *m;
 #endif
 {
-  m->move= 1 ;
-  m->whiteturn = TRUE ;
+  m->move= 0 ; //was 1 and true before
+  m->whiteturn = FALSE ;
 }
 
 #ifdef __STDC__
@@ -1832,7 +1832,7 @@ int notation_main(argc,argv)
   /* allocation of move descriptor */
   m = new_move();
   m->type = VOID ;
-  /*init_move(m);*/
+  // init_move(m); TODO: in or out?
 
   /* allocation of the play descriptor */
   theplay = (play *) malloc (sizeof(play)) ;
@@ -1850,8 +1850,7 @@ int notation_main(argc,argv)
   if ((count == 0) && !error_flag)
     output_board(dr,tos);
 
-  free(theplay);
-  yylex_destroy();
+  // yylex_destroy();
 
 
   if (error_flag) {
@@ -1859,14 +1858,20 @@ int notation_main(argc,argv)
     output_board(dr,tos);
     fatal((stderr,"\nToo many errors"));
   }
-  free(tos);
+
+  // free(tos);
+  // free_move_list(m);
+  // free(theplay -> chain);
+  // free(theplay);
+
+
   /* terminates output files */
   output_end(dr);
 
   /* close files */
   close_files();
 
-  free(dr);
+  // free(dr);
   /* exit properly */
   return 0;
 }

@@ -21,8 +21,8 @@
 #define VARIATION_OUT 1
 
 
-#define PS_HEADER  "lib/Header.ps"
-#define PS_FOOTER  "lib/Footer.ps"
+#define PS_HEADER  "Header.ps"
+#define PS_FOOTER  "Footer.ps"
 #define TEX_HEADER "lib/Header.tex"
 
 
