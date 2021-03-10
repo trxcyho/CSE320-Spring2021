@@ -452,14 +452,16 @@ static void output_board_ps(dr,g)
   register int c;
   char chaine[MAXTOKLEN];
 
-  /* header file */
-  (void) strcpy(chaine,LIB_DIR);
-  if ((ftmp = fopen(strcat(chaine,PS_HEADER),"r")) == NULL)
-    message((stderr,"Can't open ps header file.\n"));
-  else {
-    while ((c = getc(ftmp)) != EOF)
-      (void) fputc(c,dr->outfile);
-    (void) fclose(ftmp);
+  if(dr->print_headers){
+    /* header file */
+    (void) strcpy(chaine,LIB_DIR);
+    if ((ftmp = fopen(strcat(chaine,PS_HEADER),"r")) == NULL)
+      message((stderr,"Can't open ps header file.\n"));
+    else {
+      while ((c = getc(ftmp)) != EOF)
+        (void) fputc(c,dr->outfile);
+      (void) fclose(ftmp);
+    }
   }
 
   (void) fprintf(dr->outfile,"( ________) 72 714 T\n");
@@ -473,14 +475,16 @@ static void output_board_ps(dr,g)
   }
   (void) fprintf(dr->outfile,"( --------) 72 444 T\n");
 
-  /* footer file */
-  (void) strcpy(chaine,LIB_DIR);
-  if ((ftmp = fopen(strcat(chaine,PS_FOOTER),"r")) == NULL)
-    message((stderr,"Can't open ps footer file.\n"));
-  else {
-    while ((c = getc(ftmp)) != EOF)
-      (void) fputc(c,dr->outfile);
-    (void) fclose(ftmp);
+  if(dr->print_headers){
+    /* footer file */
+    (void) strcpy(chaine,LIB_DIR);
+    if ((ftmp = fopen(strcat(chaine,PS_FOOTER),"r")) == NULL)
+      message((stderr,"Can't open ps footer file.\n"));
+    else {
+      while ((c = getc(ftmp)) != EOF)
+        (void) fputc(c,dr->outfile);
+      (void) fclose(ftmp);
+    }
   }
 }
 

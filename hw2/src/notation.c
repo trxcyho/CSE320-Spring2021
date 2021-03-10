@@ -501,8 +501,8 @@ void init_move(m)
      depl *m;
 #endif
 {
-  m->move= 0 ; //was 1 and true before
-  m->whiteturn = FALSE ;
+  m->move= 1 ; //should i change to 0 and false? and put it in?
+  m->whiteturn = TRUE ;
 }
 
 #ifdef __STDC__
@@ -999,6 +999,11 @@ int check_move(m)
   c1 = m->fromcol;
   l2 = m->tolig;
   c2 = m->tocol;
+
+  if(m->piece == KING && (c2-c1 == 2) && (l1 == l2) && (l1 == 1 || l1 == 8))
+    m->type = PETITROQUE;
+  if(m->piece == KING && (c2-c1 == -2) && (l1 == l2) && (l1 == 1 || l1 == 8))
+    m->type = GRANDROQUE;
 
   if ((m->type == GRANDROQUE) || (m->type == PETITROQUE))
     return(check_roque());
