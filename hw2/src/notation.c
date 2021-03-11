@@ -1658,7 +1658,7 @@ int parse_options(argc,argv)
   while ((ch = getopt_long(argc, argv, "asf:t:o:c:e:bd:ihv", long_options, &optind)) != EOF) {
     switch (ch) {
       case 'f' : /* from langage */
-	if  (!optarg )
+	if  (optarg == NULL)
 	  fatal((stderr,"missing argument to %s option",optarg));
 	// narg++ ;
 	in_language = find_keyword (t_language, NBLANGUAGES,
@@ -1666,7 +1666,7 @@ int parse_options(argc,argv)
 				    optarg,TRUE);
 	break;
       case 't' : /* to langage */
-	if  (!optarg )
+	if  (optarg == NULL)
 	  fatal((stderr,"missing argument to %s option",optarg));
 	// narg++ ;
 	out_language = find_keyword (t_language, NBLANGUAGES,
@@ -1681,7 +1681,7 @@ int parse_options(argc,argv)
 	}
   break;//TODO: put a break so it doesn't go to case 'e'
       case 'e':
-	if  (!optarg )
+	if  (optarg == NULL)
 	  fatal((stderr,"missing argument to %s option",optarg));
 	// narg++ ;
 
@@ -1731,7 +1731,7 @@ int parse_options(argc,argv)
 	dr->only_board = TRUE;
 	break;
       case 'd': /* output driver */
-	if  (!optarg )
+	if  (optarg == NULL)
 	  fatal((stderr,"missing argument to %s option",optarg));
 	narg++ ;
 	driver = find_keyword(t_output, NB_DRIVER, DEFAULT_DRIVER,
