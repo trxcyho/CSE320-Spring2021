@@ -1691,7 +1691,7 @@ int parse_options(argc,argv)
 	move_to_display[nb_move_to_dsp] = 0;
 	while (isdigit(optarg[i])) {
 	  move_to_display[nb_move_to_dsp] =
-	    ((int) argv[narg][i] - (int) '0')
+	    ((int) optarg[i] - (int) '0')
 	      + move_to_display[nb_move_to_dsp] * 10;
 	  i++;
 	}
@@ -1699,7 +1699,7 @@ int parse_options(argc,argv)
 	stop_at_display = TRUE;
 	break;
       case 'c':
-	if  (!optarg)
+	if  (optarg == NULL)
 	  fatal((stderr,"missing argument to %s option",optarg));
 	// narg++ ;
 
@@ -1734,7 +1734,7 @@ int parse_options(argc,argv)
       case 'd': /* output driver */
 	if  (optarg == NULL)
 	  fatal((stderr,"missing argument to %s option",optarg));
-	narg++ ;
+	//narg++ ;
 	driver = find_keyword(t_output, NB_DRIVER, DEFAULT_DRIVER,
 			      optarg,TRUE);
 	break;
@@ -1743,6 +1743,8 @@ int parse_options(argc,argv)
 	break;
       case 'v': /* print version */
 	/* this already done, so exit() */
+  free(dr);
+  close_files();
 	exit(0);
 	break;
       case 'h': /* help file */
