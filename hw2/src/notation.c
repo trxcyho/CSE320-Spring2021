@@ -1654,8 +1654,9 @@ int parse_options(argc,argv)
       };
 
   int ch;
+  int option_index = 0;
 
-  while ((ch = getopt_long(argc, argv, "asf:t:o:c:e:bd:ihv", long_options, &optind)) != EOF) {
+  while ((ch = getopt_long(argc, argv, "asf:t:o:c:e:bd:ihv", long_options, &option_index)) != EOF) {
     switch (ch) {
       case 'f' : /* from langage */
 	if  (optarg == NULL)
@@ -1676,7 +1677,7 @@ int parse_options(argc,argv)
       case 'o' : /* next arg is output file */
 	// narg++ ;
 	if ((dr->outfile = fopen (optarg,"w+")) == NULL) {
-	  (void) fprintf (stderr,"can't open %s output file\n",argv[narg]);
+	  (void) fprintf (stderr,"can't open %s output file\n",optarg);
 	  (void) fprintf (stderr,"assume stdout for output\n");
 	}
   break;//TODO: put a break so it doesn't go to case 'e'
@@ -1756,7 +1757,7 @@ int parse_options(argc,argv)
         }
          break;
       default:
-            error((stderr, "\nUnknown command line options %s\n", argv[optind]));
+            error((stderr, "\nUnknown command line options %s\n", argv[optind - 1]));
             break;
         }
 	// error((stderr,"\nUnknown command line options %s\n",cp));
