@@ -97,7 +97,7 @@ extern FILE * infile;
 /* ------------- service routines -------------------*/
 
 /* Output an error message and exit */
-#define fatal(A) (void) fprintf A , close_files() , exit(1)
+#define fatal(A) (void) fprintf A , close_files() , free_error(), exit(1)
 
 /* Output an error message and set the error flag */
 #define error(A) (void) fprintf A , error_flag = TRUE , (void)fflush(stderr)
@@ -211,13 +211,15 @@ extern void init_parse(/*depl *m*/);
 extern int parse_options(int argc, char *argv[]);
 extern void close_files(void);
 extern int associe_traduction(char **table, int langage);
-extern int yylex_destroy(/*void*/);
+extern int yylex_destroy(void);
+extern void free_error(void);
 
 #else
 extern int parse_options(/*int argc, char *argv[]*/);
 extern void close_files(/*void*/);
 extern int associe_traduction(/*char **table, int langage*/);
 extern int yylex_destroy(/*void*/);
+extern void free_error(/*void*/);
 
 #endif
 
