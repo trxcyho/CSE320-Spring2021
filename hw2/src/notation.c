@@ -1768,7 +1768,8 @@ int parse_options(argc,argv)
         }
          break;
       default:
-            error((stderr, "\nUnknown command line options %s\n", argv[optind - 1]));
+            // error((stderr, "\nUnknown command line options %s\n", argv[optind - 1]));
+            error();
             break;
         }
 	// error((stderr,"\nUnknown command line options %s\n",cp));
