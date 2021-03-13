@@ -1752,8 +1752,8 @@ int parse_options(argc,argv)
 	break;
       case 'v': /* print version */
 	/* this already done, so exit() */
-  free(dr);
   close_files();
+  free_error();
 	exit(0);
 	break;
       case 'h': /* help file */
