@@ -1769,7 +1769,7 @@ int parse_options(argc,argv)
          break;
       default:
             // error((stderr, "\nUnknown command line options %s\n", argv[optind - 1]));
-            error();
+            fatal();
             break;
         }
 	// error((stderr,"\nUnknown command line options %s\n",cp));
