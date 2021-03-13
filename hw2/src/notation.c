@@ -1934,8 +1934,13 @@ void free_error()
     free(theplay);
   }
   if(dr != NULL){
-    if(stack[dr->variation].b != NULL)
-      free(stack[dr->variation].b);
+    // if(stack[dr->variation].b != NULL)
+    //   free(stack[dr->variation].b);
+    for(int i = 0; i < (dr->variation); i++){
+      if(stack[i].b != NULL)
+        free(stack[i].b);
+    }
+
     free(dr);
   }
 }
