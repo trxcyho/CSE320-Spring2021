@@ -8,8 +8,13 @@
 #include "debug.h"
 #include "sfmm.h"
 
+void sf_initialize();
+
 void *sf_malloc(size_t size) {
-    return NULL;
+    if (size == 0)
+    	return NULL;
+    //calculate how much space need to allocate(padding)
+
 }
 
 void sf_free(void *pp) {
@@ -22,4 +27,14 @@ void *sf_realloc(void *pp, size_t rsize) {
 
 void *sf_memalign(size_t size, size_t align) {
     return NULL;
+}
+
+void sf_initialize(){
+	for(int i = 0; i < NUM_FREE_LISTS; i++){
+		sf_free_list_heads[i].body.links.next = &sf_free_list_heads[i];
+		sf_free_list_heads[i].body.links.prev = &sf_free_list_heads[i];
+	}
+	sf_block *block = (sf_block*)sf_mem_grow;
+
+
 }
