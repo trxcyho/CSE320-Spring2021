@@ -143,8 +143,11 @@ int sf_errno;
  * size class.  The first list holds blocks of the minimum size M.  The second list holds
  * blocks of size (M, 2M].  The third list holds blocks whose size is in the interval (2M, 4M].
  * The fourth list holds blocks whose size is in the interval (4M, 8M], and so on.
- * This continues up to the interval (128M, 256M], and then the last list holds all blocks
- * of size greater than 256M.
+ * This continues up to the interval (16M, 32M], and then the second-to-last list (at index
+ * `NUM_FREE_LISTS-2`; *i.e.* 6) holds blocks of size greater than `32M`.
+ * The last list (at index `NUM_FREE_LISTS-1`; *i.e.* 7) is only used to contain
+ * the so-called "wilderness block", which is the free block at the end of the heap
+ * that will be extended when the heap is grown.
  *
  * Each of the circular, doubly linked lists has a "dummy" block used as the list header.
  * This dummy block is always linked between the last and the first element of the list.
