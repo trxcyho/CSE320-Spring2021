@@ -171,7 +171,8 @@ void sf_add_freelist(sf_block *block){
 		index = 7;
 
 	if(block == sf_mem_end() - 8 - size)
-		index =7;
+		index = 7;
+	//add it to he begining of the sf_free_list_heads[index]
 	sf_block* free_list = sf_free_list_heads[index].body.links.next;
 	block -> body.links.next = free_list;
 	free_list -> body.links.prev = block;
@@ -196,10 +197,12 @@ int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
 		return -1;
 
 	//pointer header or footer not within range
+	if ((void *)block <= sf_mem_start() || (void *)(block + (block -> header)) >= sf_mem_end())
+		return -1;
 
-
-	//make sure prev_alloc bit matches alloc but of prev block
-
+	//make sure prev_alloc bit matches alloc bit of prev block
+	if(!(block -> header & PREV_BLOCK_ALLOCATED) && )
+		return -1;
 
 	return 0;
 }
