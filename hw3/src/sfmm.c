@@ -14,6 +14,7 @@ sf_block *sf_search_freelist(size_t size);
 int sf_page_grow();
 sf_block *sf_split(sf_block *block, size_t size);
 void sf_add_freelist(sf_block *block);
+int sf_valid_pointer(void *pointer);
 
 void *sf_malloc(size_t size) {
     if (size <= 0)
@@ -62,6 +63,11 @@ void *sf_malloc(size_t size) {
 }
 
 void sf_free(void *pp) {
+	//check if pointer valid(if not call abort())
+	if(sf_valid_pointer(pp) != 0)
+		abort();
+	//free the block and try to coalese
+
     return;
 }
 
@@ -172,4 +178,28 @@ void sf_add_freelist(sf_block *block){
 	block -> body.links.prev = &sf_free_list_heads[index];
 	sf_free_list_heads[index].body.links.next = block;
 
+}
+
+int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
+	if(pointer == NULL)
+		return -1;
+
+	//pointer isnt 16 byte aligned
+	if((size_t) pointer %16 != 0)
+		return -1;
+
+	sf_block *block = (sf_block *)pointer;
+	size_t size = (block -> header) & ~0x3;
+
+	//not a multiple of 16 (also check at least 32)
+	if(size < 32 || size % 16 != 0 || !(block -> header & THIS_BLOCK_ALLOCATED))
+		return -1;
+
+	//pointer header or footer not within range
+
+
+	//make sure prev_alloc bit matches alloc but of prev block
+
+
+	return 0;
 }
