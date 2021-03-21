@@ -101,9 +101,7 @@ void sf_initialize(){
 	body -> body.links.next = &sf_free_list_heads[7];
 	body -> body.links.prev = &sf_free_list_heads[7];
 
-
 	*(sf_header *)((char *)body + ((~0x3 & body -> header) - 8)) = body -> header;
-
 
 }
 
@@ -168,10 +166,10 @@ void sf_add_freelist(sf_block *block){
 
 	if(block == sf_mem_end() - 8 - size)
 		index =7;
-	sf_block* free_list = sf_free_list_heads[index].body.links.prev;
-	block -> body.links.prev = free_list;
-	free_list -> body.links.next = block;
-	block -> body.links.next = &sf_free_list_heads[index];
-	sf_free_list_heads[index].body.links.prev = block;
+	sf_block* free_list = sf_free_list_heads[index].body.links.next;
+	block -> body.links.next = free_list;
+	free_list -> body.links.prev = block;
+	block -> body.links.prev = &sf_free_list_heads[index];
+	sf_free_list_heads[index].body.links.next = block;
 
 }
