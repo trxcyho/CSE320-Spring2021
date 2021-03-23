@@ -69,11 +69,12 @@ void sf_free(void *pp) {
 	if(sf_valid_pointer(pp) != 0)
 		abort();
 	//free the block and try to coalese
-	sf_block *block = (sf_block *)(pp);
+	sf_block *block = (sf_block *)(pp - 8);
 	size_t size = (block -> header) & ~0x3;
 
 	//change block to free
 	block -> header = ((block -> header) & ~THIS_BLOCK_ALLOCATED);
+
 	//set footer
 
 	//edit next block
@@ -148,9 +149,9 @@ int sf_page_grow(){
 	sf_block *original_epilogue = (sf_block *)(sf_mem_end() - PAGE_SZ - 8);
 	sf_block *new_epilogue = (sf_block *)(sf_mem_end() - 8);
 	if((original_epilogue -> header & PREV_BLOCK_ALLOCATED) == 0){
-		size_t old_size = ((sf_block *)((void  *)original_epilogue -> header - 8))-> header & ~0x3;
+		size_t old_size = ((sf_block *)((void *)page - 16)) -> header & ~0x3;
 		//(((sf_block *)((char  *)original_epilogue -> header - 8))-> header & ~0x3)
-		sf_block *wilderness_block = (sf_block *) (original_epilogue - old_size);
+		sf_block *wilderness_block = (sf_block *) ((void *)original_epilogue - old_size);
 		wilderness_block -> header = wilderness_block -> header + PAGE_SZ;
 		*(sf_header *)((char *)wilderness_block + ((~0x3 & wilderness_block -> header) - 8)) = wilderness_block -> header;
 	}
@@ -205,20 +206,26 @@ int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
 	if((size_t) pointer %16 != 0)
 		return -1;
 
-	sf_block *block = (sf_block *)pointer;
-	size_t size = (block -> header) & ~0x3;
+	sf_block *block = (sf_block *)((void *)pointer - 8);
+	size_t size = block -> header & ~0x3;
 
 	//not a multiple of 16 (also check at least 32)
-	if(size < 32 || size % 16 != 0 || !(block -> header & THIS_BLOCK_ALLOCATED))
+	if(size < 32 || size % 16 != 0 || !(block -> header & THIS_BLOCK_ALLOCATED)){
+		// debug("here1\n");
 		return -1;
+	}
 
 	//pointer header or footer not within range
-	if ((void *)block <= sf_mem_start() || (void *)(block + (block -> header)) >= sf_mem_end())
+	if ((void *)block <= sf_mem_start() || (void *)(block + (block -> header)) >= sf_mem_end()){
+		// debug("here2\n");
 		return -1;
+	}
 
 	//make sure prev_alloc bit matches alloc bit of prev block
-	if(!(block -> header & PREV_BLOCK_ALLOCATED) && (*((sf_header *)(pointer - 8)) & PREV_BLOCK_ALLOCATED) == 0)
+	if(!(block -> header & PREV_BLOCK_ALLOCATED) && (*((sf_header *)(pointer - 8)) & PREV_BLOCK_ALLOCATED) == 0){
+		// debug("here3\n");
 		return -1;
+	}
 
 	return 0;
 }
@@ -233,16 +240,17 @@ void sf_remove_freelist(sf_block * block){
 void sf_coalesce(sf_block *block){
 	size_t size = (block -> header) & ~0x3;
 	sf_block *next_block = (sf_block *)((void *)block + size);
-	sf_block *prev_block = (sf_block *)((void *)block - (void *)((block - 8)-> header & ~0x3));
+	sf_block *prev_block = (sf_block *)((void *)block - ((void *)((block - 8)-> header & ~0x3)));
 
 	int next_free = 0, prev_free = 0;
 
-	if(((prev_block -> header) & ~THIS_BLOCK_ALLOCATED) && (void *)prev_block > sf_mem_start() - 48) //make sure prev isnt prologue
+	if(((block -> header) & PREV_BLOCK_ALLOCATED) == 0) //make sure prev isnt prologue
 		prev_free = 1;
 
-	if(((next_block -> header) & ~THIS_BLOCK_ALLOCATED) && (void *)next_block < sf_mem_end() - 32) //make sure its not epilogue
+	if(((next_block -> header) & THIS_BLOCK_ALLOCATED) == 0) //make sure its not epilogue
 		next_free = 1;
 
+	debug("%d,%d", prev_free, next_free);
 
 	size_t size_prev = 0, size_next = 0;
 	//prev and next free
@@ -253,7 +261,9 @@ void sf_coalesce(sf_block *block){
 		sf_remove_freelist(prev_block);
 		sf_remove_freelist(next_block);
 
-		prev_block -> header = ((size_prev + size + size_next)| PREV_BLOCK_ALLOCATED);
+		size_t header_manip = prev_block -> header & PREV_BLOCK_ALLOCATED;
+
+		prev_block -> header = ((size_prev + size + size_next)| header_manip);
 		//set footer of blook
 		*(sf_header *)((char *)prev_block + ((~0x3 & prev_block -> header) - 8)) = prev_block -> header;
 		sf_add_freelist(prev_block);//add block into approprate location
@@ -266,7 +276,9 @@ void sf_coalesce(sf_block *block){
 
 		sf_remove_freelist(prev_block);
 
-		prev_block -> header = ((size_prev + size)| PREV_BLOCK_ALLOCATED);
+		size_t header_manip = prev_block -> header & PREV_BLOCK_ALLOCATED;
+
+		prev_block -> header = ((size_prev + size)| header_manip);
 		//set footer of blook
 		*(sf_header *)((char *)prev_block + ((~0x3 & prev_block -> header) - 8)) = prev_block -> header;
 		sf_add_freelist(prev_block);//add block into approprate location
@@ -278,14 +290,18 @@ void sf_coalesce(sf_block *block){
 		size_next = (next_block -> header) & ~0x3;
 
 		sf_remove_freelist(next_block);
-
-		block -> header = ((size_next + size)| PREV_BLOCK_ALLOCATED);
+		size_t header_manip = block -> header & PREV_BLOCK_ALLOCATED;
+		block -> header = ((size_next + size)| header_manip);
 
 		*(sf_header *)((char *)block + ((~0x3 & block -> header) - 8)) = block -> header;
 		sf_add_freelist(block);//add block into approprate location
 		return;
 	}
+
 	//if nearby blocks not free add
+	debug("%ld\n", size);
+	block -> header = (size | ((block -> header) & PREV_BLOCK_ALLOCATED));
+	*(sf_header *)((char *)block + ((~0x3 & block -> header) - 8)) = block -> header;
 	sf_add_freelist(block);
 	return;
 }
