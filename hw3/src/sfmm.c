@@ -15,6 +15,8 @@ int sf_page_grow();
 sf_block *sf_split(sf_block *block, size_t size);
 void sf_add_freelist(sf_block *block);
 int sf_valid_pointer(void *pointer);
+void sf_remove_freelist(sf_block * block);
+void sf_coalesce(sf_block *block);
 
 void *sf_malloc(size_t size) {
     if (size <= 0)
@@ -67,6 +69,18 @@ void sf_free(void *pp) {
 	if(sf_valid_pointer(pp) != 0)
 		abort();
 	//free the block and try to coalese
+	sf_block *block = (sf_block *)(pp);
+	size_t size = (block -> header) & ~0x3;
+
+	//change block to free
+	block -> header = ((block -> header) & ~THIS_BLOCK_ALLOCATED);
+	//set footer
+
+	//edit next block
+	sf_block *next = (sf_block *)((void *)block + size);
+	next -> header = (next -> header & ~ PREV_BLOCK_ALLOCATED);
+
+	sf_coalesce(block);
 
     return;
 }
@@ -134,7 +148,9 @@ int sf_page_grow(){
 	sf_block *original_epilogue = (sf_block *)(sf_mem_end() - PAGE_SZ - 8);
 	sf_block *new_epilogue = (sf_block *)(sf_mem_end() - 8);
 	if((original_epilogue -> header & PREV_BLOCK_ALLOCATED) == 0){
-		sf_block *wilderness_block = (sf_block *) (original_epilogue - (((sf_block *)(original_epilogue -> header - 8))-> header & 0x3));
+		size_t old_size = ((sf_block *)((void  *)original_epilogue -> header - 8))-> header & ~0x3;
+		//(((sf_block *)((char  *)original_epilogue -> header - 8))-> header & ~0x3)
+		sf_block *wilderness_block = (sf_block *) (original_epilogue - old_size);
 		wilderness_block -> header = wilderness_block -> header + PAGE_SZ;
 		*(sf_header *)((char *)wilderness_block + ((~0x3 & wilderness_block -> header) - 8)) = wilderness_block -> header;
 	}
@@ -201,8 +217,75 @@ int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
 		return -1;
 
 	//make sure prev_alloc bit matches alloc bit of prev block
-	if(!(block -> header & PREV_BLOCK_ALLOCATED) && )
+	if(!(block -> header & PREV_BLOCK_ALLOCATED) && (*((sf_header *)(pointer - 8)) & PREV_BLOCK_ALLOCATED) == 0)
 		return -1;
 
 	return 0;
+}
+
+void sf_remove_freelist(sf_block * block){
+	sf_block *next_block = block -> body.links.next;
+	block -> body.links.prev -> body.links.next = next_block;
+	next_block -> body.links.prev = block -> body.links.prev;
+
+}
+
+void sf_coalesce(sf_block *block){
+	size_t size = (block -> header) & ~0x3;
+	sf_block *next_block = (sf_block *)((void *)block + size);
+	sf_block *prev_block = (sf_block *)((void *)block - (void *)((block - 8)-> header & ~0x3));
+
+	int next_free = 0, prev_free = 0;
+
+	if(((prev_block -> header) & ~THIS_BLOCK_ALLOCATED) && (void *)prev_block > sf_mem_start() - 48) //make sure prev isnt prologue
+		prev_free = 1;
+
+	if(((next_block -> header) & ~THIS_BLOCK_ALLOCATED) && (void *)next_block < sf_mem_end() - 32) //make sure its not epilogue
+		next_free = 1;
+
+
+	size_t size_prev = 0, size_next = 0;
+	//prev and next free
+	if(prev_free == 1 && next_free == 1){
+		size_prev = (prev_block -> header) & ~0x3;
+		size_next = (next_block -> header) & ~0x3;
+
+		sf_remove_freelist(prev_block);
+		sf_remove_freelist(next_block);
+
+		prev_block -> header = ((size_prev + size + size_next)| PREV_BLOCK_ALLOCATED);
+		//set footer of blook
+		*(sf_header *)((char *)prev_block + ((~0x3 & prev_block -> header) - 8)) = prev_block -> header;
+		sf_add_freelist(prev_block);//add block into approprate location
+
+		return;
+	}
+	//prev free
+	else if(prev_free == 1 && next_free == 0){
+		size_prev = (prev_block -> header) & ~0x3;
+
+		sf_remove_freelist(prev_block);
+
+		prev_block -> header = ((size_prev + size)| PREV_BLOCK_ALLOCATED);
+		//set footer of blook
+		*(sf_header *)((char *)prev_block + ((~0x3 & prev_block -> header) - 8)) = prev_block -> header;
+		sf_add_freelist(prev_block);//add block into approprate location
+
+		return;
+	}
+	//next free
+	else if(prev_free == 0 && next_free == 1){
+		size_next = (next_block -> header) & ~0x3;
+
+		sf_remove_freelist(next_block);
+
+		block -> header = ((size_next + size)| PREV_BLOCK_ALLOCATED);
+
+		*(sf_header *)((char *)block + ((~0x3 & block -> header) - 8)) = block -> header;
+		sf_add_freelist(block);//add block into approprate location
+		return;
+	}
+	//if nearby blocks not free add
+	sf_add_freelist(block);
+	return;
 }
