@@ -109,8 +109,9 @@ void *sf_realloc(void *pp, size_t rsize) {
 
 	sf_block *realloc_block = pp - 8;
 	size_t original_size = realloc_block -> header & ~0x3;
+	debug("%ld", original_size);
 
-	if(original_size > updated_size){
+	if(original_size >= updated_size){
 		//split and free
 		if(original_size - updated_size < 32)
 			return realloc_block -> body.payload;
@@ -122,13 +123,13 @@ void *sf_realloc(void *pp, size_t rsize) {
 		}
 	}
 	else if (updated_size > original_size){
-		sf_block *block = sf_malloc(updated_size);
+		sf_block *block = sf_malloc(rsize);
 		block = memcpy(block, realloc_block, original_size);
 		if(block == NULL)
 			return NULL;
 		else{
 			sf_free(pp); //free original block
-			return block -> body.payload;
+			return block;
 		}
 	}
 	return pp; //size never changed
@@ -209,7 +210,8 @@ sf_block *sf_split(sf_block *block, size_t size){
 	sf_block *split_block = (sf_block *)((char *)block + size);
 	split_block -> header = ((block -> header & ~0x3) - size) | PREV_BLOCK_ALLOCATED;
 	*(sf_header *)((char *)split_block + ((~0x3 & split_block -> header) - 8)) = split_block -> header;
-	sf_add_freelist(split_block);
+	sf_coalesce(split_block);
+	// sf_add_freelist(split_block);
 
 
 	block -> header = (block -> header & PREV_BLOCK_ALLOCATED) | size | THIS_BLOCK_ALLOCATED;
@@ -248,7 +250,7 @@ int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
 		debug("null pointer");
 		return -1;
 	}
-
+	debug("%p", pointer);
 	//pointer isnt 16 byte aligned
 	if((size_t) pointer %16 != 0){
 		debug("16 aligned");
@@ -302,7 +304,7 @@ void sf_coalesce(sf_block *block){
 	int next_free = 0, prev_free = 0;
 
 	if(((block -> header) & PREV_BLOCK_ALLOCATED) == 0){ //make sure prev isnt prologue
-		prev_block = (sf_block *)((void *)block - ((void *)((block - 8)-> header & ~0x3)));
+		prev_block = (sf_block *)((void *)block - (((sf_block *)((void *)block - 8))-> header & ~0x3));
 		prev_free = 1;
 	}
 
@@ -333,10 +335,11 @@ void sf_coalesce(sf_block *block){
 	//prev free
 	else if(prev_free == 1 && next_free == 0){
 		debug("prev free next not");
+		debug("%p, %p, %p", (void *)prev_block, block, next_block);
 		size_prev = (prev_block -> header) & ~0x3;
 		debug("%ld, %ld", size_prev, size);
 
-		sf_remove_freelist(block);
+		sf_remove_freelist(prev_block);
 
 		size_t header_manip = prev_block -> header & PREV_BLOCK_ALLOCATED;
 
@@ -350,7 +353,6 @@ void sf_coalesce(sf_block *block){
 	//next free
 	else if(prev_free == 0 && next_free == 1){
 		size_next = (next_block -> header) & ~0x3;
-
 		sf_remove_freelist(next_block);
 		size_t header_manip = block -> header & PREV_BLOCK_ALLOCATED;
 		block -> header = ((size_next + size)| header_manip);
