@@ -38,12 +38,10 @@ int main(int argc, char const *argv[]) {
     // // printf("%p\n", ptr4);
     // free(ptr1);
 
-    size_t sz_x = 8, sz_y = 200, sz_z = 1;
-	/* void *x = */ sf_malloc(sz_x);
-	void *y = sf_malloc(sz_y);
-	/* void *z = */ sf_malloc(sz_z);
-
-	sf_free(y);
+    size_t sz_x = sizeof(int), sz_y = 10, sz_x1 = sizeof(int) * 20;
+	void *x = sf_malloc(sz_x);
+	/* void *y = */ sf_malloc(sz_y);
+	x = sf_realloc(x, sz_x1);
 	sf_show_heap();
 
     sf_show_blocks();

@@ -89,6 +89,7 @@ void sf_free(void *pp) {
 
 void *sf_realloc(void *pp, size_t rsize) {
 	//valid pointer?
+	// debug("realloc start");
 	if(sf_valid_pointer(pp) != 0){
 		sf_errno = EINVAL;
 		return NULL;
@@ -104,7 +105,7 @@ void *sf_realloc(void *pp, size_t rsize) {
 	if(rsize > 24)
 		updated_size =rsize + 8 + padding;
 
-	sf_block *realloc_block = pp;
+	sf_block *realloc_block = pp - 8;
 	size_t original_size = realloc_block -> header & ~0x3;
 
 	if(original_size > updated_size){
@@ -117,7 +118,7 @@ void *sf_realloc(void *pp, size_t rsize) {
 			return NULL;
 		else{
 			free(pp); //free original block
-			return block;
+			return block -> body.payload;
 		}
 	}
 	return pp; //size never changed
@@ -232,7 +233,7 @@ void sf_add_freelist(sf_block *block){
 }
 
 int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
-	// debug("valid pointer");
+	debug("valid pointer");
 	if(pointer == NULL){
 		debug("null pointer");
 		return -1;
@@ -240,7 +241,7 @@ int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
 
 	//pointer isnt 16 byte aligned
 	if((size_t) pointer %16 != 0){
-		// debug("16 aligned");
+		debug("16 aligned");
 		return -1;
 	}
 
@@ -249,19 +250,19 @@ int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
 
 	//not a multiple of 16 (also check at least 32)
 	if(size < 32 || size % 16 != 0 || !(block -> header & THIS_BLOCK_ALLOCATED)){
-		// debug("here1\n");
+		debug("here1\n");
 		return -1;
 	}
 
 	//pointer header or footer not within range
 	if ((void *)block <= sf_mem_start() || (void *)(block + (block -> header)) >= sf_mem_end()){
-		// debug("here2\n");
+		debug("here2\n");
 		return -1;
 	}
 
 	//make sure prev_alloc bit matches alloc bit of prev block
 	if(!(block -> header & PREV_BLOCK_ALLOCATED) && (*((sf_header *)(pointer - 16)) & PREV_BLOCK_ALLOCATED) != 0){
-		// debug("here3\n");
+		debug("here3\n");
 		return -1;
 	}
 
