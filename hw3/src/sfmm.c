@@ -89,12 +89,13 @@ void sf_free(void *pp) {
 
 void *sf_realloc(void *pp, size_t rsize) {
 	//valid pointer?
-	// debug("realloc start");
+	debug("realloc start");
 	if(sf_valid_pointer(pp) != 0){
 		sf_errno = EINVAL;
 		return NULL;
 	}
 	//size == 0?
+	debug("%ld", rsize);
 	if(rsize == 0){
 		free(pp);
 		return NULL;
@@ -104,20 +105,29 @@ void *sf_realloc(void *pp, size_t rsize) {
 	size_t updated_size = 32;
 	if(rsize > 24)
 		updated_size =rsize + 8 + padding;
+	debug("%ld\n", updated_size);
 
 	sf_block *realloc_block = pp - 8;
 	size_t original_size = realloc_block -> header & ~0x3;
 
 	if(original_size > updated_size){
 		//split and free
-		return sf_split(realloc_block, updated_size);
+		if(original_size - updated_size < 32)
+			return realloc_block -> body.payload;
+		else{
+			sf_block *body = (void *)realloc_block + original_size;
+			body -> header = body -> header & ~PREV_BLOCK_ALLOCATED;
+			*(sf_header *)((char *)body + ((~0x3 & body -> header) - 8)) = body -> header;
+			return ((sf_block *)sf_split(realloc_block, updated_size)) -> body.payload;
+		}
 	}
 	else if (updated_size > original_size){
 		sf_block *block = sf_malloc(updated_size);
+		block = memcpy(block, realloc_block, original_size);
 		if(block == NULL)
 			return NULL;
 		else{
-			free(pp); //free original block
+			sf_free(pp); //free original block
 			return block -> body.payload;
 		}
 	}
@@ -233,7 +243,7 @@ void sf_add_freelist(sf_block *block){
 }
 
 int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
-	debug("valid pointer");
+	// debug("valid pointer");
 	if(pointer == NULL){
 		debug("null pointer");
 		return -1;
@@ -254,19 +264,26 @@ int sf_valid_pointer(void *pointer){//-1 if not valid; 0 if valid
 		return -1;
 	}
 
-	//pointer header or footer not within range
-	if ((void *)block <= sf_mem_start() || (void *)(block + (block -> header)) >= sf_mem_end()){
+	// //pointer header or footer not within range
+	// debug("%ld", size);
+	// debug("%p, %p", block, sf_mem_start() + 40);
+	// debug("%p, %p", (void *)(block + size), sf_mem_end() - 8);
+	if((void *)block >= (sf_mem_end() - 8))
+		return -1;
+	if ((void *)block < (sf_mem_start()+40) || (void *)((void*)block + size) > (sf_mem_end()-8)){
 		debug("here2\n");
 		return -1;
 	}
 
 	//make sure prev_alloc bit matches alloc bit of prev block
-	if(!(block -> header & PREV_BLOCK_ALLOCATED) && (*((sf_header *)(pointer - 16)) & PREV_BLOCK_ALLOCATED) != 0){
+	// debug("%ld", block -> header & PREV_BLOCK_ALLOCATED);
+	// debug("%ld", (*((sf_header *)(pointer - 16)) & PREV_BLOCK_ALLOCATED));
+	if((block -> header & PREV_BLOCK_ALLOCATED) == 0 && (*((sf_header *)(pointer - 16)) & THIS_BLOCK_ALLOCATED) != 0){
 		debug("here3\n");
 		return -1;
 	}
 
-	// debug("good pointer");
+	debug("good pointer");
 	return 0;
 }
 
@@ -315,9 +332,11 @@ void sf_coalesce(sf_block *block){
 	}
 	//prev free
 	else if(prev_free == 1 && next_free == 0){
+		debug("prev free next not");
 		size_prev = (prev_block -> header) & ~0x3;
+		debug("%ld, %ld", size_prev, size);
 
-		sf_remove_freelist(prev_block);
+		sf_remove_freelist(block);
 
 		size_t header_manip = prev_block -> header & PREV_BLOCK_ALLOCATED;
 
