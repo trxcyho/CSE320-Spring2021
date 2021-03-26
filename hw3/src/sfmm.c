@@ -136,7 +136,52 @@ void *sf_realloc(void *pp, size_t rsize) {
 }
 
 void *sf_memalign(size_t size, size_t align) {
-    return NULL;
+	//make sure align at least 32
+	if(align < 32){
+		sf_errno = EINVAL;
+		return NULL;
+	}
+	//make sure align is a power of 2
+	size_t updated_size = align;
+	while(updated_size > 0){
+		if(updated_size == 1)
+			break;
+		if(updated_size % 2 != 0){
+			sf_errno = EINVAL;
+			return NULL;
+		}
+		updated_size /= 2;
+	}
+	debug("memalign here");
+	if(size == 0)
+		return NULL;
+	//allocate larger block than requested
+	sf_block *new_block = (void *)sf_malloc(size + align + 40) -8;
+	if(new_block == NULL){
+		sf_errno = ENOMEM;
+		return NULL;
+	}
+	debug("memalign here1");
+	size_t padding = (align - ((size_t)new_block + 8)%align)%align;//payload is aligned
+	if(padding == 0)
+		return sf_realloc((void *)new_block + 8, size);
+	debug("memalign here2");
+	if(padding < 32)
+		padding += align;
+	debug("%ld. %ld", new_block-> header, padding);
+	//create new headers(split begining)
+	sf_block *aligned_block = (void *)new_block + padding;
+	aligned_block -> header = ((new_block -> header & ~0x3) - padding) | THIS_BLOCK_ALLOCATED;//-padding+8?
+	debug("%ld. %ld", aligned_block-> header, padding);
+	*(sf_header *)((char *)aligned_block + ((~0x3 & aligned_block -> header) - 8)) = aligned_block -> header;
+	// new_block -> header = (new_block -> header & PREV_BLOCK_ALLOCATED) | padding | ~THIS_BLOCK_ALLOCATED;
+	new_block->header = padding | (new_block->header & PREV_BLOCK_ALLOCATED);
+	*(sf_header *)((char *)new_block + ((~0x3 & new_block -> header) - 8)) = new_block -> header;//set footer of new block
+	debug("%ld", new_block-> header & ~0x3);
+	// sf_add_freelist(new_block);
+	sf_coalesce(new_block);
+	//coalease new block?
+    return sf_realloc((void *)aligned_block + 8, size);
 }
 
 void sf_initialize(){
@@ -211,9 +256,7 @@ sf_block *sf_split(sf_block *block, size_t size){
 	split_block -> header = ((block -> header & ~0x3) - size) | PREV_BLOCK_ALLOCATED;
 	*(sf_header *)((char *)split_block + ((~0x3 & split_block -> header) - 8)) = split_block -> header;
 	sf_coalesce(split_block);
-	// sf_add_freelist(split_block);
-
-
+	//coalesce with nearby blocks and add
 	block -> header = (block -> header & PREV_BLOCK_ALLOCATED) | size | THIS_BLOCK_ALLOCATED;
 
 	return block;
@@ -298,6 +341,7 @@ void sf_remove_freelist(sf_block * block){
 
 void sf_coalesce(sf_block *block){
 	size_t size = (block -> header) & ~0x3;
+	debug("%ld, ", size);
 	sf_block *next_block = (sf_block *)((void *)block + size);
 	sf_block *prev_block = NULL;
 
@@ -307,12 +351,12 @@ void sf_coalesce(sf_block *block){
 		prev_block = (sf_block *)((void *)block - (((sf_block *)((void *)block - 8))-> header & ~0x3));
 		prev_free = 1;
 	}
-
+	debug("%ld next block header", next_block -> header);
 	if(((next_block -> header) & THIS_BLOCK_ALLOCATED) == 0) //make sure its not epilogue
 		next_free = 1;
 
-	// debug("%d,%d", prev_free, next_free);
-	// debug("getting ready to coalese\n");
+	debug("%d,%d", prev_free, next_free);
+	debug("getting ready to coalese\n");
 
 	size_t size_prev = 0, size_next = 0;
 	//prev and next free
@@ -364,7 +408,7 @@ void sf_coalesce(sf_block *block){
 	}
 
 	//if nearby blocks not free add
-	// debug("neither\n");
+	debug("neither\n");
 	block -> header = (size | ((block -> header) & PREV_BLOCK_ALLOCATED));
 	*(sf_header *)((char *)block + ((~0x3 & block -> header) - 8)) = block -> header;
 	sf_add_freelist(block);
