@@ -180,3 +180,94 @@ Test(sfmm_basecode_suite, realloc_smaller_block_free_block, .timeout = TEST_TIME
 //STUDENT UNIT TESTS SHOULD BE WRITTEN BELOW
 //DO NOT DELETE THESE COMMENTS
 //############################################
+Test(sfmm_basecode_suite, coalesce_prev_and_current, .timeout = TEST_TIMEOUT) {
+	sf_errno = 0;
+        size_t sz_x = 64, sz_y = 70, sz_z = 130;
+	void *x = sf_malloc(sz_x);
+	void *y = sf_malloc(sz_y);
+	void *z = sf_malloc(sz_z);
+
+	cr_assert_not_null(x, "x is NULL!");
+	cr_assert_not_null(y, "y is NULL!");
+	cr_assert_not_null(z, "z is NULL!");
+
+	sf_free(x);
+	sf_free(y);
+	sf_block *bp = (sf_block *)((char *)z - 8);
+	cr_assert(bp->header & 0x1, "Allocated bit is not set!");
+
+	// After realloc'ing x, we can return a block of size 48
+	// to the freelist.  This block will go into the main freelist and be coalesced.
+	assert_free_block_count(160, 1);
+	assert_free_block_count(7840, 1);
+	cr_assert(sf_errno == 0, "sf_errno is not zero!");
+}
+
+Test(sfmm_basecode_suite, realloc_to_size_zero, .timeout = TEST_TIMEOUT) {
+        size_t sz_x = 64;
+	void *x = sf_malloc(sz_x);
+	void *y = sf_realloc(x, 0);
+
+	cr_assert_null(y, "Y is not null");
+
+	// sf_block *bp = (sf_block *)((char *)x - 8);
+	// cr_assert(bp->header & 0x1, "Allocated bit is not set!");
+
+	// After realloc'ing x, we can return a block of size 48
+	// to the freelist.  This block will go into the main freelist and be coalesced.
+	assert_free_block_count(8144, 1);
+}
+
+Test(sfmm_basecode_suite, memalign_align_not_pow_two, .timeout = TEST_TIMEOUT) {
+	sf_errno = 0;
+        size_t sz_x = 64, sz_y = 8;
+	void *x = sf_malloc(sz_x);
+	void *y = sf_realloc(x, sz_y);
+	void *z = sf_memalign(258, 300);
+
+	cr_assert_not_null(y, "y is NULL!");
+	cr_assert_null(z, "Z is not null");
+
+	sf_block *bp = (sf_block *)((char *)x - 8);
+	cr_assert(bp->header & 0x1, "Allocated bit is not set!");
+	cr_assert((bp->header & ~0xf) == 32, "Block size not what was expected!");
+
+	// After realloc'ing x, we can return a block of size 48
+	// to the freelist.  This block will go into the main freelist and be coalesced.
+	assert_free_block_count(0, 1);
+	assert_free_block_count(8112, 1);
+
+	cr_assert(sf_errno == EINVAL, "sf_errno is not EINVAL!");
+}
+
+Test(sfmm_basecode_suite, memalign_test_one, .timeout = TEST_TIMEOUT) {
+	void *x = sf_memalign(50, 128);
+    void *y = sf_malloc(100);
+
+    cr_assert_not_null(x, "x is NULL!");
+	cr_assert_not_null(y, "y is NULL!");
+
+	sf_block *bp = (sf_block *)((char *)y - 8);
+	cr_assert(bp->header & 0x1, "Allocated bit is not set!");
+	cr_assert((bp->header & ~0xf) == 112, "Block size not what was expected!");
+
+	cr_assert( (size_t) x % 128 == 0, "x is not ALIGN!");
+}
+
+Test(sfmm_basecode_suite, memalign_test_two, .timeout = TEST_TIMEOUT) {
+	void *x = sf_memalign(50, 128);
+    void *y = sf_malloc(100);
+    void *z = sf_memalign(40, 32);
+
+    cr_assert_not_null(x, "X is null");
+	cr_assert_not_null(y, "Y is null");
+	cr_assert_not_null(z, "Z is null");
+
+	sf_block *bp = (sf_block *)((char *)z - 8);
+	cr_assert(bp->header & 0x1, "Allocated bit is not set!");
+	cr_assert((bp->header & ~0xf) == 48, "Block size not what was expected!");
+
+	cr_assert( (size_t) x % 128 == 0, "x is not ALIGN!");
+	cr_assert( (size_t) y % 32 == 0, "x is not ALIGN!");
+
+}
