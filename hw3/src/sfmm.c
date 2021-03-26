@@ -156,22 +156,22 @@ void *sf_memalign(size_t size, size_t align) {
 		sf_errno = ENOMEM;
 		return NULL;
 	}
-	debug("memalign here1");
+
 	size_t padding = (align - ((size_t)new_block + 8)%align)%align;//payload is aligned
 	if(padding == 0)
 		return sf_realloc((void *)new_block + 8, size);
-	debug("memalign here2");
+
 	if(padding < 32)
 		padding += align;
-	debug("%ld. %ld", new_block-> header, padding);
+
 	//create new headers(split begining)
 	sf_block *aligned_block = (void *)new_block + padding;
 	aligned_block -> header = ((new_block -> header & ~0x3) - padding) | THIS_BLOCK_ALLOCATED;//-padding+8?
-	debug("%ld. %ld", aligned_block-> header, padding);
+
 	*(sf_header *)((char *)aligned_block + ((~0x3 & aligned_block -> header) - 8)) = aligned_block -> header;
 	new_block->header = padding | (new_block->header & PREV_BLOCK_ALLOCATED);
 	*(sf_header *)((char *)new_block + ((~0x3 & new_block -> header) - 8)) = new_block -> header;//set footer of new block
-	debug("%ld", new_block-> header & ~0x3);
+
 	// sf_add_freelist(new_block);
 	sf_coalesce(new_block);
 	//coalease new block?
