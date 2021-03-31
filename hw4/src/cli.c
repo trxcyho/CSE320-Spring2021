@@ -11,9 +11,13 @@
 #include "conversions.h"
 #include "sf_readline.h"
 
+int quit = 0; //when to exit cli
+
 int run_cli(FILE *in, FILE *out)
 {
-    // TO BE IMPLEMENTED
-    fprintf(stderr, "You have to implement run_cli() before the application will function.\n");
+    fprintf(out, "imp> ");
+
     abort();
 }
+
+//Commands are: help quit type printer conversion printers jobs print cancel disable enable pause resume
