@@ -17,23 +17,29 @@
 //protoype
 char** convert_to_commands(char* line);
 int operation(int num_args, char** arguments, FILE *out);
+int string_to_number(char *string);
+int valid_printer_name(char *name);
 
 //define printer and job from imprimer.h
-typedef struct printer {
+struct printer {
 	char *name;
 	struct file_type *file;
-	PRINTER_STATUS *pstatus;
-}PRINTER;
+	PRINTER_STATUS pstatus;
+};
 //create array for printers
+PRINTER *printer_array[MAX_PRINTERS];
 
-typedef struct job {
+struct job {
 	int *id;
 	struct file_type *file;
-	JOB_STATUS *jstatus;
-}JOB;
+	JOB_STATUS jstatus;
+
+};
 //create array for jobs
+JOB *job_array[MAX_JOBS];
 
 int num_args = 0;
+int printer_count = 0;
 int num_printers = 0;//make sure it dont go over 32 when adding
 int num_jobs = 0;//make sure it dont go over 64 when adding
 int quit = 0; //when to exit cli
@@ -42,7 +48,13 @@ int quit = 0; //when to exit cli
 
 int run_cli(FILE *in, FILE *out)
 {
+	for(int i = 0; i < MAX_JOBS; i++)
+		job_array[i] = NULL;
+
 	char **arguments;
+	// signal(SIGTERM, );
+	// signal(SIGCOUNT, );
+	// signal(SIGSTOP, )
 	if(in == NULL)
 		return -1;
 	//create a buffer to hold the storage of the lines
@@ -69,7 +81,7 @@ int run_cli(FILE *in, FILE *out)
 			num_args = 0;
 	    }
 	}
-	if(in != stdin && quit)
+	if(in != stdin && quit == 1)
 		return -1;
 
 	return 0;
@@ -99,7 +111,6 @@ char** convert_to_commands(char* line){
 }
 
 int operation(int num_args, char** arguments, FILE *out){
-	//first combine characters to arguments and keep track number of args
 	if(arguments[0] == NULL){
 		//throw an error;
 		return -1;
@@ -119,64 +130,187 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
-		// printf("quit");
+		//free all the printers and jobs here?
 		quit = 1;
 		sf_cmd_ok();
 		return 0;
 	}
 	if (strcmp("printers", arguments[0]) == 0){
 		//print all printers
+		//id, name, type, status
+		for(int i = 0; i < printer_count; i++){
+			PRINTER *printer = printer_array[i];
+			fprintf(out, "PRINTER: id=%d, name=%s, type=%s, status=", i, printer -> name, printer -> file -> name);
+			if(printer -> pstatus == 0)
+				fprintf(out, "disabled\n");
+			else if(printer -> pstatus == 1)
+				fprintf(out, "idle\n");
+			else
+				fprintf(out, "busy\n");
+		}
+
+		sf_cmd_ok();
 		return 0;
 	}
 	if (strcmp("jobs", arguments[0]) == 0){
 		//print all jobs
+		sf_cmd_ok();
 		return 0;
 	}
 	if(strcmp("type", arguments[0]) == 0){
 		if(num_args != 2){
-			//sf_cmd_error("arg count");
+			sf_cmd_error("arg count");
+			return -1;
+		}
+		FILE_TYPE *type = find_type(arguments[1]);
+		if(type != NULL){
+			sf_cmd_error("type defined already");
+			return -1;
 		}
 		// FILE_TYPE *newtype = define_type(arguments[1]);
+		sf_cmd_ok();
 		return 0;
 	}
 	if(strcmp("printer", arguments[0]) == 0){
 		if(num_args != 3){
-			//sf_cmd_error("arg count");
+			sf_cmd_error("arg count");
 			return -1;
 		}
-		//create printer (make status as idle)
-		//sf_printer_defined(name of printer, type);
+		if(printer_count >= MAX_PRINTERS){
+			sf_cmd_error("max printers reached");
+			return -1;
+		}
+
+		//check to make sure name is unique first
+		if(valid_printer_name(arguments[1]) == -1){
+			sf_cmd_error("printer name not unique");
+			return -1;
+		}
+		//make sure filetype is valid
+		FILE_TYPE *type = find_type(arguments[2]);
+		if(type == NULL){
+			sf_cmd_error("type not defined");
+			return -1;
+		}
+		PRINTER *newprinter = malloc(sizeof(PRINTER));
+		newprinter -> name = arguments[1];
+		newprinter -> file = type;
+		PRINTER_STATUS stat = PRINTER_DISABLED; //create printer (make status as disabled)
+		newprinter -> pstatus = stat;
+		sf_printer_defined(arguments[1], arguments[2]);
+		//add printer to array
+		printer_array[printer_count] = newprinter;
+		printer_count++;
+		sf_cmd_ok();
 		return 0;
 	}
 
 	//arg 1 is a number
 	if(strcmp("cancel", arguments[0]) == 0){
+		if(num_args != 2){
+			sf_cmd_error("arg count");
+			return -1;
+		}
+		int jnum = string_to_number(arguments[1]);
+		if(jnum < 0){
+			sf_cmd_error("job num invalid");
+			return -1;
+		}
+		//cancel a job
 
+		sf_cmd_ok();
+		return 0;
 	}
 	if (strcmp("pause", arguments[0]) == 0){
+		if(num_args != 2){
+			sf_cmd_error("arg count");
+			return -1;
+		}
+		int jnum = string_to_number(arguments[1]);
+		if(jnum < 0){
+			sf_cmd_error("job num invalid");
+			return -1;
+		}
 
+		sf_cmd_ok();
+		return 0;
 	}
 	if (strcmp("resume", arguments[0]) == 0){
+		if(num_args != 2){
+			sf_cmd_error("arg count");
+			return -1;
+		}
+		int jnum = string_to_number(arguments[1]);
+		if(jnum < 0){
+			sf_cmd_error("job num invalid");
+			return -1;
+		}
 
+		sf_cmd_ok();
+		return 0;
 	}
 
 	//arg 1 is a printer_name
 	if (strcmp("disable", arguments[0]) == 0){
+		if(num_args != 2){
+			sf_cmd_error("arg count");
+			return -1;
+		}
+		if (valid_printer_name(arguments[1]) == 0){
+			sf_cmd_error("printer name not found");
+			return -1;
+		}
+		//change printer status to disabled
+		sf_cmd_ok();
+		return 0;
 
 	}
 	if (strcmp("enable", arguments[0]) == 0){
-
+		if(num_args != 2){
+			sf_cmd_error("arg count");
+			return -1;
+		}
+		if (valid_printer_name(arguments[1]) == 0){
+			sf_cmd_error("printer name not found");
+			return -1;
+		}
+		//change printer status to idle
+		sf_cmd_ok();
+		return 0;
 	}
 
 	//ubknown num_args associated
 	if(strcmp("print", arguments[0]) == 0){
 
+		sf_cmd_ok();
+		return 0;
 	}
 	if(strcmp("conversion", arguments[0]) == 0){
 
+		sf_cmd_ok();
+		return 0;
 	}
 
 	//unknown command
-	//throw error
+	sf_cmd_error("unknown command");
 	return -1;
+}
+
+int string_to_number(char *string){
+	char *ptr = NULL;
+	long value = strtol(optarg, &ptr, 10);
+	if(strcmp(ptr, "\0") != 0) {
+      return -1;
+   }
+   return (int)value;
+}
+
+int valid_printer_name(char *name){
+	//0 if unique
+	for(int i = 0; i < printer_count; i++){
+		PRINTER *printer = printer_array[i];
+		if(strcmp(name, printer -> name) == 0)
+			return -1;
+	}
+	return 0;
 }
