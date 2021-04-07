@@ -18,7 +18,7 @@
 char** convert_to_commands(char* line);
 int operation(int num_args, char** arguments, FILE *out);
 int string_to_number(char *string);
-int valid_printer_name(char *name);
+int valid_printer(char *name);
 
 //define printer and job from imprimer.h
 struct printer {
@@ -192,7 +192,7 @@ int operation(int num_args, char** arguments, FILE *out){
 		}
 
 		//check to make sure name is unique first
-		if(valid_printer_name(arguments[1]) == -1){
+		if(valid_printer(arguments[1]) != -1){
 			sf_cmd_error("printer name not unique");
 			return -1;
 		}
@@ -248,7 +248,16 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("type of file not defined");
 			return -1;
 		}
-
+		//loop through rest of the arguments and make sure its a valid printer
+		if(num_args > 2){
+			for(int i = 2; i < num_args; i++){
+				if(valid_printer(arguments[i]) == -1){
+					sf_cmd_error("printer not found");
+					return -1;
+				}
+			}
+		}
+		//(if num arg > 2) create a job with those printer eligibility, else create job with ffffffff
 		sf_cmd_ok();
 		return 0;
 	}
@@ -304,11 +313,11 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
-		if (valid_printer_name(arguments[1]) == 0){
+		if (valid_printer(arguments[1]) == -1){
 			sf_cmd_error("printer not found");
 			return -1;
 		}
-		//change printer status to disabled
+		//change printer status to disabled (sf_printer_status(char *name, PRINTER_STATUS status))
 		sf_cmd_ok();
 		return 0;
 
@@ -318,11 +327,15 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
-		if (valid_printer_name(arguments[1]) == 0){
+		if (valid_printer(arguments[1]) == -1){
 			sf_cmd_error("printer not found");
 			return -1;
 		}
-		//change printer status to idle
+		PRINTER *printer = printer_array[valid_printer(arguments[1])];
+		//change printer status to idle (sf_printer_status(char *name, PRINTER_STATUS status))
+		printer -> pstatus = PRINTER_IDLE;
+		sf_printer_status(printer->name, printer->pstatus);
+		//if able to, look through jobs and fork
 		sf_cmd_ok();
 		return 0;
 	}
@@ -341,12 +354,12 @@ int string_to_number(char *string){
    return (int)value;
 }
 
-int valid_printer_name(char *name){
-	//0 if unique
+int valid_printer(char *name){
+	//returns index of printer, -1 if no such printer
 	for(int i = 0; i < printer_count; i++){
 		PRINTER *printer = printer_array[i];
 		if(strcmp(name, printer -> name) == 0)
-			return -1;
+			return i;
 	}
-	return 0;
+	return -1;
 }
