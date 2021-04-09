@@ -19,6 +19,7 @@ char** convert_to_commands(char* line);
 int operation(int num_args, char** arguments, FILE *out);
 int string_to_number(char *string);
 int valid_printer(char *name);
+int starting_job(PRINTER *printer, JOB *job);
 
 //define printer and job from imprimer.h
 struct printer {
@@ -28,6 +29,7 @@ struct printer {
 };
 //create array for printers
 PRINTER *printer_array[MAX_PRINTERS];
+int printer_pid[MAX_PRINTERS];
 
 struct job {
 	char *filename;
@@ -37,6 +39,7 @@ struct job {
 };
 //create array for jobs
 JOB *job_array[MAX_JOBS];
+int job_pid[MAX_JOBS];
 
 int num_args = 0;
 int printer_count = 0;
@@ -59,10 +62,14 @@ int run_cli(FILE *in, FILE *out)
 		return -1;
 	//create a buffer to hold the storage of the lines
 	if(in != stdin){
+		// char *buffer = (char *)malloc()
 		// size_t characters;
 		// size_t length = 0;
 		// while (characters = getline(&buffer, &length, in) != 0)
-			// loop through get line and change any \n to \0
+			// loop through buffer and change any \n to \0
+			//call convert_to_commands (frees buffer)
+			//operation (similar to interactive)
+
 	}
 	else{
 		while(!quit){
@@ -216,6 +223,10 @@ int operation(int num_args, char** arguments, FILE *out){
 	}
 
 	if(strcmp("conversion", arguments[0]) == 0){
+		if(num_args < 4){
+			sf_cmd_error("arg count");
+			return -1;
+		}
 		//make sure arg[1] and arg[2] are actual file types
 		FILE_TYPE *type1 = find_type(arguments[1]);
 		if(type1 == NULL){
@@ -242,6 +253,10 @@ int operation(int num_args, char** arguments, FILE *out){
 	}
 
 	if(strcmp("print", arguments[0]) == 0){
+		if(num_args < 2){
+			sf_cmd_error("arg count");
+			return -1;
+		}
 		//make sure arg1 is a valid filename for a valid type
 		FILE_TYPE *file_type = infer_file_type(arguments[1]);
 		if(file_type == NULL){
@@ -249,17 +264,37 @@ int operation(int num_args, char** arguments, FILE *out){
 			return -1;
 		}
 		//loop through rest of the arguments and make sure its a valid printer
+		int eligible_printers = 0;
 		if(num_args > 2){
 			for(int i = 2; i < num_args; i++){
-				if(valid_printer(arguments[i]) == -1){
+				int index = valid_printer(arguments[i]);
+				if(index == -1){
 					sf_cmd_error("printer not found");
 					return -1;
 				}
+				eligible_printers = eligible_printers & (0x1 << index);
+			}
+
+		}
+		else
+			eligible_printers = 0xffffffff;
+		JOB *newjob = malloc(sizeof(JOB));
+		newjob -> filename = arguments[1];
+		newjob -> file = file_type;
+		JOB_STATUS jcreate = JOB_CREATED;
+		newjob -> jstatus = jcreate;
+		newjob -> eligible = eligible_printers;
+		for(int i = 0; i < MAX_JOBS; i++){
+			if(job_array[i] == NULL){
+				sf_job_created(i, newjob -> filename, newjob -> file -> name);
+				job_array[i] = newjob;
+				sf_cmd_ok();
+				return 0;
 			}
 		}
-		//(if num arg > 2) create a job with those printer eligibility, else create job with ffffffff
-		sf_cmd_ok();
-		return 0;
+		//if comes out of for loop, job array is full
+		sf_cmd_error("max jobs reached");
+		return -1;
 	}
 
 	//arg 1 is a number
@@ -271,6 +306,10 @@ int operation(int num_args, char** arguments, FILE *out){
 		int jnum = string_to_number(arguments[1]);
 		if(jnum < 0){
 			sf_cmd_error("job num invalid");
+			return -1;
+		}
+		if(job_array[jnum] == NULL){
+			sf_cmd_error("job not defined");
 			return -1;
 		}
 		//cancel a job
@@ -288,7 +327,11 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("job num invalid");
 			return -1;
 		}
-
+		if(job_array[jnum] == NULL){
+			sf_cmd_error("job not defined");
+			return -1;
+		}
+		//killpg(pid, SIGPause)
 		sf_cmd_ok();
 		return 0;
 	}
@@ -300,6 +343,10 @@ int operation(int num_args, char** arguments, FILE *out){
 		int jnum = string_to_number(arguments[1]);
 		if(jnum < 0){
 			sf_cmd_error("job num invalid");
+			return -1;
+		}
+		if(job_array[jnum] == NULL){
+			sf_cmd_error("job not defined");
 			return -1;
 		}
 
@@ -335,7 +382,15 @@ int operation(int num_args, char** arguments, FILE *out){
 		//change printer status to idle (sf_printer_status(char *name, PRINTER_STATUS status))
 		printer -> pstatus = PRINTER_IDLE;
 		sf_printer_status(printer->name, printer->pstatus);
-		//if able to, look through jobs and fork
+		//if able to, look through jobs, fork, pipe, and fork
+		int pid = fork();
+		//child process
+		if (pid != 0){
+			//pipe and fork again?
+
+			//store in corresponding printer value
+		}
+		//main process
 		sf_cmd_ok();
 		return 0;
 	}
@@ -362,4 +417,10 @@ int valid_printer(char *name){
 			return i;
 	}
 	return -1;
+}
+
+int starting_job(PRINTER *printer, JOB *job){
+	//return pid of the fork
+	//setpgid(0, 0);
+	return 0;
 }
