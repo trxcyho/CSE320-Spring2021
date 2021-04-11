@@ -75,6 +75,10 @@ int run_cli(FILE *in, FILE *out)
 		while(!quit){
 	    	char* inputcommand = sf_readline("imp> ");
 			//if input command is NULL ->return -1//do we stop execution of processes, free everything
+			if(inputcommand == NULL){//if sf_readline is EOF
+				//free everything
+				return -1;
+			}
 	    	arguments = convert_to_commands(inputcommand);
 	    	// printf("%s\n", arguments[0]);
 	    	operation(num_args, arguments, out);
@@ -376,15 +380,42 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
-		if (valid_printer(arguments[1]) == -1){
+		int indexofprinter = valid_printer(arguments[1]);
+		if (indexofprinter == -1){
 			sf_cmd_error("printer not found");
 			return -1;
 		}
-		PRINTER *printer = printer_array[valid_printer(arguments[1])];
+		PRINTER *printer = printer_array[indexofprinter];
 		//change printer status to idle (sf_printer_status(char *name, PRINTER_STATUS status))
+		if(printer -> pstatus != PRINTER_DISABLED){
+			sf_cmd_error("printer was not disabled in first place");
+			return -1;
+		}
 		printer -> pstatus = PRINTER_IDLE;
 		sf_printer_status(printer->name, printer->pstatus);
 		//if able to, look through jobs, fork, pipe, and fork
+		for(int i = 0; i < printer_count; i++){
+			PRINTER *loopprinter = printer_array[i];
+			if(loopprinter -> pstatus == PRINTER_IDLE){
+				for(int j = 0; j < MAX_JOBS; j++){
+					if(job_array[j] != NULL){
+						int eligibility = job_array[j] -> eligible;
+						if((eligibility & (0x1 << i)) == 1){
+							//check if conversion between types
+							CONVERSION ** convert = find_conversion_path(job_array[j] -> file -> name,
+							 						printer_array[indexofprinter] -> file -> name);
+							if(convert == NULL){
+								sf_cmd_error("no such conversion");
+								return -1;
+							}
+							// int pid = fork();
+							// if()
+						}
+					}
+				}
+			}
+		}
+
 		int pid = fork();
 		if(pid < 0){
 			sf_cmd_error("forking failed");
@@ -392,9 +423,11 @@ int operation(int num_args, char** arguments, FILE *out){
 		}
 		//child process
 		else if(pid == 0){
-			pid_t child_process = getpid();
-			printf("%d\n", child_process);
-			// exit(1);
+			pid_t child_process = getpid();//input into pid printer array or pid job aray
+			// int fdwrite = imp_connect_to_printer(char* printer name, char *printer type, PRINTER_NORMAL);
+
+
+			exit(1);
 
 		}
 		//main process
