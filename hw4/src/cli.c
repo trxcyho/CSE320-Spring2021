@@ -13,6 +13,10 @@
 
 //added things
 #include <unistd.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 //protoype
 char *readfile(FILE *in);
@@ -20,7 +24,11 @@ char** convert_to_commands(char* line);
 int operation(int num_args, char** arguments, FILE *out);
 int string_to_number(char *string);
 int valid_printer(char *name);
-int starting_job(PRINTER *printer, JOB *job);
+void starting_job(PRINTER *printer, JOB *job);
+void look_for_jobs();
+void sigchild_handler(int sig);
+void free_memory();
+
 
 //define printer and job from imprimer.h
 struct printer {
@@ -58,15 +66,14 @@ int run_cli(FILE *in, FILE *out)
 		job_array[i] = NULL;
 
 	char **arguments;
-	// signal(SIGTERM, );
-	// signal(SIGCOUNT, );
-	// signal(SIGSTOP, )
+	signal(SIGCHLD, sigchild_handler);
 	if(in == NULL)
 		return -1;
 	//create a buffer to hold the storage of the lines
 	if(in != stdin){
 		char *filecommand = readfile(in);
 		while (filecommand != NULL){
+			look_for_jobs();
 			arguments = convert_to_commands(filecommand);
 			operation(num_args, arguments, out);
 			//reset everything
@@ -80,10 +87,12 @@ int run_cli(FILE *in, FILE *out)
 	}
 	else{
 		while(!quit){
+	    	look_for_jobs();
 	    	char* inputcommand = sf_readline("imp> ");
 			//if input command is NULL ->return -1//do we stop execution of processes, free everything
 			if(inputcommand == NULL){//if sf_readline is EOF
 				//call a function that frees everything
+				free_memory();
 				return -1;
 			}
 	    	arguments = convert_to_commands(inputcommand);
@@ -105,7 +114,7 @@ int run_cli(FILE *in, FILE *out)
 }
 
 char *readfile(FILE *in){
-	int buffersize = 1, counter = 0;
+	int buffersize = 32, counter = 0;
 	char *buffer = (char *)calloc(buffersize, sizeof(char));
 	int c;
 	while(1){
@@ -119,8 +128,10 @@ char *readfile(FILE *in){
 		buffer[counter] = c;
 		counter++;
 		//increase buffersize by 1
-		buffersize++;
-		buffer = realloc(buffer, buffersize);
+		if(counter == buffersize){
+			buffersize *= 2;
+			buffer = realloc(buffer, buffersize);
+		}
 	}
 }
 
@@ -168,6 +179,7 @@ int operation(int num_args, char** arguments, FILE *out){
 			return -1;
 		}
 		//free all the printers and jobs here?
+		free_memory();
 		quit = 1;
 		sf_cmd_ok();
 		return 0;
@@ -183,13 +195,6 @@ int operation(int num_args, char** arguments, FILE *out){
 			PRINTER *printer = printer_array[i];
 			fprintf(out, "PRINTER: id=%d, name=%s, type=%s, status=%s\n", i, printer -> name,
 				printer -> file -> name, printer_status_names[printer -> pstatus]);
-
-			// if(printer -> pstatus == 0)
-			// 	fprintf(out, "disabled\n");
-			// else if(printer -> pstatus == 1)
-			// 	fprintf(out, "idle\n");
-			// else
-			// 	fprintf(out, "busy\n");
 		}
 
 		sf_cmd_ok();
@@ -252,8 +257,7 @@ int operation(int num_args, char** arguments, FILE *out){
 		strcpy(newname, arguments[1]);
 		newprinter -> name = newname;
 		newprinter -> file = type;
-		PRINTER_STATUS stat = PRINTER_DISABLED; //create printer (make status as disabled)
-		newprinter -> pstatus = stat;
+		newprinter -> pstatus = PRINTER_DISABLED;
 		sf_printer_defined(arguments[1], arguments[2]);
 		//add printer to array
 		printer_array[printer_count] = newprinter;
@@ -279,14 +283,14 @@ int operation(int num_args, char** arguments, FILE *out){
 			return -1;
 		}
 
-		char** program_args = calloc(num_args - 3, sizeof(char*));
+		char** program_args = calloc(num_args - 3 + 1, sizeof(char*));
 		int index = 0;
 		for(int i = 3; i < num_args; i++){
 			program_args[index] = malloc(strlen(arguments[i]) + 1);
 			strcpy(program_args[index], arguments[i]);
 			index++;
 		}
-
+		program_args[index] = NULL;
 		define_conversion(type1 -> name, type2 -> name, program_args);
 		sf_cmd_ok();
 		return 0;
@@ -312,7 +316,7 @@ int operation(int num_args, char** arguments, FILE *out){
 					sf_cmd_error("printer not found");
 					return -1;
 				}
-				eligible_printers = eligible_printers & (0x1 << index);
+				eligible_printers = eligible_printers | (0x1 << index);
 			}
 
 		}
@@ -323,8 +327,7 @@ int operation(int num_args, char** arguments, FILE *out){
 		strcpy(nameoffile, arguments[1]);
 		newjob -> filename = nameoffile;
 		newjob -> file = file_type;
-		JOB_STATUS jcreate = JOB_CREATED;
-		newjob -> jstatus = jcreate;
+		newjob -> jstatus = JOB_CREATED;
 		newjob -> eligible = eligible_printers;
 		for(int i = 0; i < MAX_JOBS; i++){
 			if(job_array[i] == NULL){
@@ -402,11 +405,15 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
-		if (valid_printer(arguments[1]) == -1){
+		int indexofprinter = valid_printer(arguments[1]);
+		if (indexofprinter == -1){
 			sf_cmd_error("printer not found");
 			return -1;
 		}
 		//change printer status to disabled (sf_printer_status(char *name, PRINTER_STATUS status))
+		PRINTER *printer = printer_array[indexofprinter];
+		printer -> pstatus = PRINTER_DISABLED;
+		sf_printer_status(printer->name, printer->pstatus);
 		sf_cmd_ok();
 		return 0;
 
@@ -430,48 +437,8 @@ int operation(int num_args, char** arguments, FILE *out){
 		printer -> pstatus = PRINTER_IDLE;
 		sf_printer_status(printer->name, printer->pstatus);
 		//if able to, look through jobs, fork, pipe, and fork
-		for(int i = 0; i < printer_count; i++){
-			PRINTER *loopprinter = printer_array[i];
-			if(loopprinter -> pstatus == PRINTER_IDLE){
-				for(int j = 0; j < MAX_JOBS; j++){
-					if(job_array[j] != NULL){
-						int eligibility = job_array[j] -> eligible;
-						if((eligibility & (0x1 << i)) == 1){
-							//check if conversion between types
-							CONVERSION ** convert = find_conversion_path(job_array[j] -> file -> name,
-							 						loopprinter -> file -> name);
-							if(convert == NULL){
-								sf_cmd_error("no such conversion");
-								return -1;
-							}
-							//change status of printer and job and then fork
-							// int pid = fork();
-							// if()
-						}
-					}
-				}
-			}
-		}
+		look_for_jobs();
 
-		int pid = fork();
-		if(pid < 0){
-			sf_cmd_error("forking failed");
-			return -1;
-		}
-		//child process
-		else if(pid == 0){
-			// pid_t child_process = getpid();//input into pid printer array or pid job aray
-			//
-
-			exit(1);
-
-		}
-		//main process
-		else {
-			//pipe and fork again?
-
-			//store in corresponding printer value
-		}
 		sf_cmd_ok();
 		return 0;
 	}
@@ -500,11 +467,133 @@ int valid_printer(char *name){
 	return -1;
 }
 
-int starting_job(PRINTER *printer, JOB *job){
+void starting_job(PRINTER *printer, JOB *job){
 	//return pid of the fork
-	//setpgid(0, 0);
-	//int fdwrite = imp_connect_to_printer(char* printer name, char *printer type, PRINTER_NORMAL);
-	return 0;
+	setpgid(0, 0);
+	int fd[2];
+	int status;
+	//with the pipeline
+	//find conversion path
+	//loop through conversion to see number args before bull (if 0 just cat, else convert)
+	CONVERSION **convert1 = find_conversion_path(job -> file -> name, printer -> file -> name);
+	int counter = 0;
+	while(convert1[counter] != NULL)
+		counter++;
+	if(counter == 0){
+		//just cat and print
+		pid_t processid = fork();
+		if(processid < 0)
+			exit(1);
+		else if(processid == 0){
+			//make an array or char** (bin/cat, rest null)
+			char * executearray[] = {(char *)"/bin/cat", NULL};
+			dup2(imp_connect_to_printer(printer -> name, printer->file -> name, PRINTER_NORMAL), STDOUT_FILENO);
+			dup2(open(job -> filename, O_RDONLY) , STDIN_FILENO);
+			execvp(executearray[0], executearray);
+			exit(0);
+		} else{
+			waitpid(processid, &status, 0);
+			if(WIFEXITED(status))
+				if(WEXITSTATUS(status) == 0)
+					exit(0);
+				else
+					exit(1);
+			else
+				exit(1);
+		}
+	}
+	else{
+		int trackprev = 0;
+		for(int i = 0; i < counter; i++){
+			pipe(fd);
+			pid_t processid = fork();
+			if(processid < 0)
+				exit(1);
+			else if(processid == 0){
+				if(i == 0){
+					dup2(open(job -> filename, O_RDONLY) , STDIN_FILENO);
+				}
+				else {
+					dup2(trackprev, STDIN_FILENO);
+				}
+				//stdout
+				if(i == (counter - 1)){
+					dup2(imp_connect_to_printer(printer -> name, printer->file -> name, PRINTER_NORMAL), STDOUT_FILENO);
+				}
+				else{
+					dup2(fd[1], STDOUT_FILENO);
+				}
+				execvp(convert1[i] -> cmd_and_args[0], convert1[i] -> cmd_and_args);
+				exit(0);
+			} else {
+
+				waitpid(processid, &status, 0);
+				trackprev = fd[0];
+				if(WIFEXITED(status))
+					if(WEXITSTATUS(status) == 0)
+						exit(0);
+					else
+						exit(1);
+				else
+					exit(1);
+			}
+		}
+	}
+}
+
+void look_for_jobs(){
+	for(int i = 0; i < printer_count; i++){
+		PRINTER *loopprinter = printer_array[i];
+		if(loopprinter -> pstatus == PRINTER_IDLE){
+			for(int j = 0; j < MAX_JOBS; j++){
+				if(job_array[j] != NULL){
+					int eligibility = job_array[j] -> eligible;
+					if((eligibility & (0x1 << i)) == 1){
+						//check if conversion between types
+						CONVERSION ** convert = find_conversion_path(job_array[j] -> file -> name,
+						 						loopprinter -> file -> name);
+						if(convert != NULL){
+							//change status of printer and job and then fork
+							loopprinter -> pstatus = PRINTER_BUSY;
+							sf_printer_status(loopprinter -> name, PRINTER_BUSY);
+							job_array[j] -> jstatus = JOB_RUNNING;
+							pid_t pid = fork();
+							if(pid < 0){
+								continue;//check next job
+							}
+							//child process
+							else if(pid == 0){
+								starting_job(loopprinter, job_array[j]);
+							}
+							//main process
+							else {
+								int counter = 0;
+								while(convert[counter] != NULL)
+									counter++;
+
+								char * path[counter + 1];
+								counter = 0;
+								while(convert[counter] != NULL){
+									path[counter] = convert[counter] -> cmd_and_args[0];
+									counter ++;
+								}
+								path[counter] = NULL;
+								sf_job_started(j, loopprinter -> name, pid, path);
+								printer_pid[i] = pid;
+								job_pid[j] = pid;
+							}
+						}
+
+					}
+				}
+			}
+		}
+	}
+}
+
+void sigchild_handler(int sig){
+	//sent from child process to main to kill itself LOL
+	//handle if child dies(cancel/error/finish), stops(pause), continues(resume)
 }
 
 void free_memory(){
