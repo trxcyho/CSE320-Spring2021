@@ -29,7 +29,7 @@ struct printer {
 };
 //create array for printers
 PRINTER *printer_array[MAX_PRINTERS];
-int printer_pid[MAX_PRINTERS];
+pid_t printer_pid[MAX_PRINTERS];
 
 struct job {
 	char *filename;
@@ -39,7 +39,7 @@ struct job {
 };
 //create array for jobs
 JOB *job_array[MAX_JOBS];
-int job_pid[MAX_JOBS];
+pid_t job_pid[MAX_JOBS];
 
 int num_args = 0;
 int printer_count = 0;
@@ -210,7 +210,9 @@ int operation(int num_args, char** arguments, FILE *out){
 			return -1;
 		}
 		PRINTER *newprinter = malloc(sizeof(PRINTER));
-		newprinter -> name = arguments[1];
+		char *newname = malloc(strlen(arguments[1]) + 1);
+		strcpy(newname, arguments[1]);
+		newprinter -> name = newname;
 		newprinter -> file = type;
 		PRINTER_STATUS stat = PRINTER_DISABLED; //create printer (make status as disabled)
 		newprinter -> pstatus = stat;
@@ -242,7 +244,7 @@ int operation(int num_args, char** arguments, FILE *out){
 		char** program_args = calloc(num_args - 3, sizeof(char*));
 		int index = 0;
 		for(int i = 3; i < num_args; i++){
-			program_args[index] = malloc(strlen(arguments[i] + 1));
+			program_args[index] = malloc(strlen(arguments[i]) + 1);
 			strcpy(program_args[index], arguments[i]);
 			index++;
 		}
@@ -384,13 +386,23 @@ int operation(int num_args, char** arguments, FILE *out){
 		sf_printer_status(printer->name, printer->pstatus);
 		//if able to, look through jobs, fork, pipe, and fork
 		int pid = fork();
+		if(pid < 0){
+			sf_cmd_error("forking failed");
+			return -1;
+		}
 		//child process
-		if (pid != 0){
+		else if(pid == 0){
+			pid_t child_process = getpid();
+			printf("%d\n", child_process);
+			// exit(1);
+
+		}
+		//main process
+		else {
 			//pipe and fork again?
 
 			//store in corresponding printer value
 		}
-		//main process
 		sf_cmd_ok();
 		return 0;
 	}
