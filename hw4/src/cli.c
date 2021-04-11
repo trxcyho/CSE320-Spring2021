@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 //protoype
+char *readfile(FILE *in);
 char** convert_to_commands(char* line);
 int operation(int num_args, char** arguments, FILE *out);
 int string_to_number(char *string);
@@ -51,6 +52,8 @@ int quit = 0; //when to exit cli
 
 int run_cli(FILE *in, FILE *out)
 {
+	if(in == NULL)
+		return -1;
 	for(int i = 0; i < MAX_JOBS; i++)
 		job_array[i] = NULL;
 
@@ -62,28 +65,31 @@ int run_cli(FILE *in, FILE *out)
 		return -1;
 	//create a buffer to hold the storage of the lines
 	if(in != stdin){
-		// char *buffer = (char *)malloc()
-		// size_t characters;
-		// size_t length = 0;
-		// while (characters = getline(&buffer, &length, in) != 0)
-			// loop through buffer and change any \n to \0
-			//call convert_to_commands (frees buffer)
-			//operation (similar to interactive)
-
+		char *filecommand = readfile(in);
+		while (filecommand != NULL){
+			arguments = convert_to_commands(filecommand);
+			operation(num_args, arguments, out);
+			//reset everything
+			for(int i = 0; i < num_args; i++)
+				free(arguments[i]);
+			free(arguments);
+			num_args = 0;
+			//read next line
+			filecommand = readfile(in);
+		}
 	}
 	else{
 		while(!quit){
 	    	char* inputcommand = sf_readline("imp> ");
 			//if input command is NULL ->return -1//do we stop execution of processes, free everything
 			if(inputcommand == NULL){//if sf_readline is EOF
-				//free everything
+				//call a function that frees everything
 				return -1;
 			}
 	    	arguments = convert_to_commands(inputcommand);
 	    	// printf("%s\n", arguments[0]);
 	    	operation(num_args, arguments, out);
 
-	    	//convert char* to char **
 	    	//free anything that is needed
 			//if quit is called return 0
 			for(int i = 0; i < num_args; i++)
@@ -96,6 +102,26 @@ int run_cli(FILE *in, FILE *out)
 		return -1;
 
 	return 0;
+}
+
+char *readfile(FILE *in){
+	int buffersize = 1, counter = 0;
+	char *buffer = (char *)calloc(buffersize, sizeof(char));
+	int c;
+	while(1){
+		c = fgetc(in);
+		if(c == EOF)
+			return NULL;
+		if(c == '\n'){
+			buffer[counter] = '\0';
+			return buffer;
+		}
+		buffer[counter] = c;
+		counter++;
+		//increase buffersize by 1
+		buffersize++;
+		buffer = realloc(buffer, buffersize);
+	}
 }
 
 //have a function that converts char* to char ** then call operation
@@ -155,13 +181,15 @@ int operation(int num_args, char** arguments, FILE *out){
 		//id, name, type, status
 		for(int i = 0; i < printer_count; i++){
 			PRINTER *printer = printer_array[i];
-			fprintf(out, "PRINTER: id=%d, name=%s, type=%s, status=", i, printer -> name, printer -> file -> name);
-			if(printer -> pstatus == 0)
-				fprintf(out, "disabled\n");
-			else if(printer -> pstatus == 1)
-				fprintf(out, "idle\n");
-			else
-				fprintf(out, "busy\n");
+			fprintf(out, "PRINTER: id=%d, name=%s, type=%s, status=%s\n", i, printer -> name,
+				printer -> file -> name, printer_status_names[printer -> pstatus]);
+
+			// if(printer -> pstatus == 0)
+			// 	fprintf(out, "disabled\n");
+			// else if(printer -> pstatus == 1)
+			// 	fprintf(out, "idle\n");
+			// else
+			// 	fprintf(out, "busy\n");
 		}
 
 		sf_cmd_ok();
@@ -174,7 +202,13 @@ int operation(int num_args, char** arguments, FILE *out){
 		}
 		//print all jobs
 		//type, status, eligible printers, file
-
+		for(int i = 0; i < MAX_JOBS; i++){
+			JOB *job = job_array[i];
+			if(job != NULL){
+				fprintf(out, "JOB[%d]: type=%s, eligible=%x, file=%s, status=%s\n", i, job -> file -> name,
+					job -> eligible, job -> filename, job_status_names[job -> jstatus]);
+			}
+		}
 		sf_cmd_ok();
 		return 0;
 	}
@@ -285,7 +319,9 @@ int operation(int num_args, char** arguments, FILE *out){
 		else
 			eligible_printers = 0xffffffff;
 		JOB *newjob = malloc(sizeof(JOB));
-		newjob -> filename = arguments[1];
+		char *nameoffile = malloc(strlen(arguments[1]) + 1);
+		strcpy(nameoffile, arguments[1]);
+		newjob -> filename = nameoffile;
 		newjob -> file = file_type;
 		JOB_STATUS jcreate = JOB_CREATED;
 		newjob -> jstatus = jcreate;
@@ -403,11 +439,12 @@ int operation(int num_args, char** arguments, FILE *out){
 						if((eligibility & (0x1 << i)) == 1){
 							//check if conversion between types
 							CONVERSION ** convert = find_conversion_path(job_array[j] -> file -> name,
-							 						printer_array[indexofprinter] -> file -> name);
+							 						loopprinter -> file -> name);
 							if(convert == NULL){
 								sf_cmd_error("no such conversion");
 								return -1;
 							}
+							//change status of printer and job and then fork
 							// int pid = fork();
 							// if()
 						}
@@ -423,9 +460,8 @@ int operation(int num_args, char** arguments, FILE *out){
 		}
 		//child process
 		else if(pid == 0){
-			pid_t child_process = getpid();//input into pid printer array or pid job aray
-			// int fdwrite = imp_connect_to_printer(char* printer name, char *printer type, PRINTER_NORMAL);
-
+			// pid_t child_process = getpid();//input into pid printer array or pid job aray
+			//
 
 			exit(1);
 
@@ -467,5 +503,22 @@ int valid_printer(char *name){
 int starting_job(PRINTER *printer, JOB *job){
 	//return pid of the fork
 	//setpgid(0, 0);
+	//int fdwrite = imp_connect_to_printer(char* printer name, char *printer type, PRINTER_NORMAL);
 	return 0;
+}
+
+void free_memory(){
+	for(int i = 0; i < printer_count; i++){
+		PRINTER *printer = printer_array[i];
+		free(printer -> name);
+		free(printer);
+	}
+	for(int i = 0; i < MAX_JOBS; i++){
+		JOB *job = job_array[i];
+		if(job != NULL){
+			free(job -> filename);
+			free(job);
+		}
+	}
+
 }
