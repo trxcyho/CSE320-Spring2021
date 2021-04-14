@@ -27,6 +27,8 @@ int valid_printer(char *name);
 void starting_job(PRINTER *printer, JOB *job);
 void look_for_jobs();
 void sigchild_handler(int sig);
+int job_index_from_pid(pid_t pid);
+int printer_index_from_pid(pid_t pid);
 void free_memory();
 
 
@@ -51,10 +53,10 @@ JOB *job_array[MAX_JOBS];
 pid_t job_pid[MAX_JOBS];
 
 int num_args = 0;
-int printer_count = 0;
-int num_printers = 0;//make sure it dont go over 32 when adding
-int num_jobs = 0;//make sure it dont go over 64 when adding
+int printer_count = 0; //make sure it dont go over 32 when adding
+// int num_jobs = 0;//make sure it dont go over 64 when adding
 int quit = 0; //when to exit cli
+int intialization = 0;
 
 
 
@@ -62,8 +64,15 @@ int run_cli(FILE *in, FILE *out)
 {
 	if(in == NULL)
 		return -1;
-	for(int i = 0; i < MAX_JOBS; i++)
-		job_array[i] = NULL;
+	if(intialization == 0){
+		for(int i = 0; i < MAX_JOBS; i++){
+			job_array[i] = NULL;
+			job_pid[i] = 0;
+		}
+		for(int i = 0; i < MAX_PRINTERS; i++)
+			printer_pid[i] = 0;
+	}
+	intialization = 1;
 
 	char **arguments;
 	signal(SIGCHLD, sigchild_handler);
@@ -292,6 +301,9 @@ int operation(int num_args, char** arguments, FILE *out){
 		}
 		program_args[index] = NULL;
 		define_conversion(type1 -> name, type2 -> name, program_args);
+		for(int i =0; i < num_args -3 + 1; i++)
+			free(program_args[i]);
+		free(program_args);
 		sf_cmd_ok();
 		return 0;
 	}
@@ -557,6 +569,7 @@ void look_for_jobs(){
 							loopprinter -> pstatus = PRINTER_BUSY;
 							sf_printer_status(loopprinter -> name, PRINTER_BUSY);
 							job_array[j] -> jstatus = JOB_RUNNING;
+							sf_job_status(j, JOB_RUNNING);
 							pid_t pid = fork();
 							if(pid < 0){
 								continue;//check next job
@@ -594,6 +607,65 @@ void look_for_jobs(){
 void sigchild_handler(int sig){
 	//sent from child process to main to kill itself LOL
 	//handle if child dies(cancel/error/finish), stops(pause), continues(resume)
+	if(sig == SIGCHLD){
+		int status;
+		pid_t pid_master = wait(&status); //tells you which pid finished and set status = exit status
+		//do we need to check if pid_master is greater than 0
+		//find the job and printer from pid and then changed its stauses based on value of status(0=finish 1=aborted)
+		int printerindex = printer_index_from_pid(pid_master);
+		int jobindex = job_index_from_pid(pid_master);
+		if(printerindex == -1 || jobindex == -1)
+			return;//exit this???
+		if(WIFEXITED(status) == 0){
+			printer_array[printerindex] -> pstatus = PRINTER_IDLE;
+			sf_printer_status(printer_array[printerindex] -> name, PRINTER_IDLE);
+			job_array[jobindex] -> jstatus = JOB_FINISHED;
+			sf_job_status(jobindex, JOB_FINISHED);
+			sf_job_finished(jobindex, 0);
+		}
+		else{
+			printer_array[printerindex] -> pstatus = PRINTER_IDLE;
+			sf_printer_status(printer_array[printerindex] -> name, PRINTER_IDLE);
+			job_array[jobindex] -> jstatus = JOB_ABORTED;
+			sf_job_status(jobindex, JOB_ABORTED);
+			sf_job_finished(jobindex, 1);
+		}
+
+		if(sig == SIGSTOP){//pause
+
+
+		}
+		if(sig == SIGCONT){ //resume
+
+		}
+		if(sig == SIGTERM){//cancel
+
+		}
+
+		//when you make job_array[jobindex] = NULL, call sf_job_deleted
+	}
+}
+
+int job_index_from_pid(pid_t pid){
+	//return index of the job from pid else -1 if pid not found
+	for(int i = 0; i < MAX_JOBS; i++){
+		if(job_pid[i] != 0){
+			if(job_pid[i] == pid)
+				return i;
+		}
+	}
+	return -1;
+}
+
+int printer_index_from_pid(pid_t pid){
+	//return index of printer from pid else -1 if pid not found
+	for(int i = 0; i < printer_count; i++){
+		if(printer_pid[i] != 0){
+			if(printer_pid[i] == pid)
+				return i;
+		}
+	}
+	return -1;
 }
 
 void free_memory(){
