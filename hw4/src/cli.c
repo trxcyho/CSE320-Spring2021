@@ -17,6 +17,7 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <time.h>
 
 //protoype
 char *readfile(FILE *in);
@@ -115,6 +116,20 @@ int run_cli(FILE *in, FILE *out)
 				free(arguments[i]);
 			free(arguments);
 			num_args = 0;
+
+			//remove job from queue
+			for(int i = 0; i < MAX_JOBS; i++){
+				if(job_array[i] != NULL){
+					time_t current = time(NULL);
+					time_t difference = current - (job_array[i] -> todelete);
+					if(difference > 10){
+						job_array[i] ->jstatus = JOB_DELETED;
+						sf_job_status(i, JOB_DELETED);
+						job_array[i] = NULL;
+						sf_job_deleted(i);
+					}
+				}
+			}
 	    }
 	}
 	if(in != stdin && quit == 1)
