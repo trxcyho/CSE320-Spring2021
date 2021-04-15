@@ -30,6 +30,7 @@ void look_for_jobs();
 void sigchild_handler(int sig);
 int job_index_from_pid(pid_t pid);
 int printer_index_from_pid(pid_t pid);
+void delete_jobs();
 void free_memory();
 
 
@@ -92,6 +93,8 @@ int run_cli(FILE *in, FILE *out)
 				free(arguments[i]);
 			free(arguments);
 			num_args = 0;
+
+			delete_jobs();
 			//read next line
 			filecommand = readfile(in);
 		}
@@ -117,19 +120,8 @@ int run_cli(FILE *in, FILE *out)
 			free(arguments);
 			num_args = 0;
 
-			//remove job from queue
-			for(int i = 0; i < MAX_JOBS; i++){
-				if(job_array[i] != NULL){
-					time_t current = time(NULL);
-					time_t difference = current - (job_array[i] -> todelete);
-					if(difference > 10){
-						job_array[i] ->jstatus = JOB_DELETED;
-						sf_job_status(i, JOB_DELETED);
-						job_array[i] = NULL;
-						sf_job_deleted(i);
-					}
-				}
-			}
+			delete_jobs();
+
 	    }
 	}
 	if(in != stdin && quit == 1)
@@ -387,12 +379,21 @@ int operation(int num_args, char** arguments, FILE *out){
 			return -1;
 		}
 		//cancel a job
+		if(job_pid[jnum] == 0){
+			sf_cmd_error("job isn't running");
+			return -1;
+		}
 		int outcome = killpg(job_pid[jnum], SIGTERM);
 		if(outcome < 0){
 			sf_cmd_error("signal not sucessfully sent to child");
 			return -1;
 		}
 		//TODO: call sigcont?
+		outcome = killpg(job_pid[jnum], SIGCONT);
+		if(outcome < 0){
+			sf_cmd_error("signal not sucessfully sent to child");
+			return -1;
+		}
 		sf_cmd_ok();
 		return 0;
 	}
@@ -408,6 +409,10 @@ int operation(int num_args, char** arguments, FILE *out){
 		}
 		if(job_array[jnum] == NULL){
 			sf_cmd_error("job not defined");
+			return -1;
+		}
+		if(job_pid[jnum] == 0){
+			sf_cmd_error("job isn't running");
 			return -1;
 		}
 		int outcome = killpg(job_pid[jnum], SIGSTOP);
@@ -430,6 +435,10 @@ int operation(int num_args, char** arguments, FILE *out){
 		}
 		if(job_array[jnum] == NULL){
 			sf_cmd_error("job not defined");
+			return -1;
+		}
+		if(job_pid[jnum] == 0){
+			sf_cmd_error("job isn't running");
 			return -1;
 		}
 		int outcome = killpg(job_pid[jnum], SIGCONT);
@@ -701,6 +710,25 @@ int printer_index_from_pid(pid_t pid){
 		}
 	}
 	return -1;
+}
+
+void delete_jobs(){
+	//remove job from queue
+	for(int i = 0; i < MAX_JOBS; i++){
+		if(job_array[i] != NULL){
+			if((job_array[i] -> todelete) != 0){
+				time_t current = time(NULL);
+				time_t difference = current - (job_array[i] -> todelete);
+				if(difference > 10){
+					job_array[i] ->jstatus = JOB_DELETED;
+					sf_job_status(i, JOB_DELETED);
+					job_array[i] = NULL;
+					sf_job_deleted(i);
+					job_pid[i] = 0;
+				}
+			}
+		}
+	}
 }
 
 void free_memory(){
