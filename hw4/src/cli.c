@@ -47,6 +47,7 @@ struct job {
 	struct file_type *file;
 	JOB_STATUS jstatus;
 	int eligible;
+	time_t todelete;
 };
 //create array for jobs
 JOB *job_array[MAX_JOBS];
@@ -341,6 +342,7 @@ int operation(int num_args, char** arguments, FILE *out){
 		newjob -> file = file_type;
 		newjob -> jstatus = JOB_CREATED;
 		newjob -> eligible = eligible_printers;
+		newjob -> todelete = 0;
 		for(int i = 0; i < MAX_JOBS; i++){
 			if(job_array[i] == NULL){
 				sf_job_created(i, newjob -> filename, newjob -> file -> name);
@@ -370,7 +372,12 @@ int operation(int num_args, char** arguments, FILE *out){
 			return -1;
 		}
 		//cancel a job
-
+		int outcome = killpg(job_pid[jnum], SIGTERM);
+		if(outcome < 0){
+			sf_cmd_error("signal not sucessfully sent to child");
+			return -1;
+		}
+		//TODO: call sigcont?
 		sf_cmd_ok();
 		return 0;
 	}
@@ -388,7 +395,11 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("job not defined");
 			return -1;
 		}
-		//killpg(pid, SIGPause)
+		int outcome = killpg(job_pid[jnum], SIGSTOP);
+		if(outcome < 0){
+			sf_cmd_error("signal not sucessfully sent to child");
+			return -1;
+		}
 		sf_cmd_ok();
 		return 0;
 	}
@@ -406,7 +417,11 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("job not defined");
 			return -1;
 		}
-
+		int outcome = killpg(job_pid[jnum], SIGCONT);
+		if(outcome < 0){
+			sf_cmd_error("signal not sucessfully sent to child");
+			return -1;
+		}
 		sf_cmd_ok();
 		return 0;
 	}
@@ -607,42 +622,47 @@ void look_for_jobs(){
 void sigchild_handler(int sig){
 	//sent from child process to main to kill itself LOL
 	//handle if child dies(cancel/error/finish), stops(pause), continues(resume)
-	if(sig == SIGCHLD){
-		int status;
-		pid_t pid_master = wait(&status); //tells you which pid finished and set status = exit status
-		//do we need to check if pid_master is greater than 0
-		//find the job and printer from pid and then changed its stauses based on value of status(0=finish 1=aborted)
-		int printerindex = printer_index_from_pid(pid_master);
-		int jobindex = job_index_from_pid(pid_master);
-		if(printerindex == -1 || jobindex == -1)
-			return;//exit this???
-		if(WIFEXITED(status) == 0){
-			printer_array[printerindex] -> pstatus = PRINTER_IDLE;
-			sf_printer_status(printer_array[printerindex] -> name, PRINTER_IDLE);
-			job_array[jobindex] -> jstatus = JOB_FINISHED;
-			sf_job_status(jobindex, JOB_FINISHED);
-			sf_job_finished(jobindex, 0);
+	int status;
+	pid_t pid_master;
+	while((pid_master = waitpid (-1, &status, WNOHANG)) > 0){//tells you which pid finished and set status = exit status
+		if(sig == SIGCHLD){
+			//find the job and printer from pid and then changed its stauses based on value of status(0=finish 1=aborted)
+			int printerindex = printer_index_from_pid(pid_master);
+			int jobindex = job_index_from_pid(pid_master);
+			if(printerindex == -1 || jobindex == -1)
+				continue;//skip this pid??
+
+			if(WIFSTOPPED(status)){//process paused
+				job_array[jobindex] -> jstatus = JOB_PAUSED;
+				sf_job_status(jobindex, JOB_PAUSED);
+
+			}
+			if(WIFCONTINUED(status)){ //process resumed
+				job_array[jobindex] -> jstatus = JOB_RUNNING;
+				sf_job_status(jobindex, JOB_RUNNING);
+			}
+
+			if(WIFSIGNALED(status) || WIFEXITED(status)){ //child was terminated
+				if(WEXITSTATUS(status) == 0){//child terminate normally
+					printer_array[printerindex] -> pstatus = PRINTER_IDLE;
+					sf_printer_status(printer_array[printerindex] -> name, PRINTER_IDLE);
+					job_array[jobindex] -> jstatus = JOB_FINISHED;
+					sf_job_status(jobindex, JOB_FINISHED);
+					sf_job_finished(jobindex, 0);
+					//for job_delete
+					job_array[jobindex] -> todelete = time(NULL);
+				}
+				else{
+					printer_array[printerindex] -> pstatus = PRINTER_IDLE;
+					sf_printer_status(printer_array[printerindex] -> name, PRINTER_IDLE);
+					job_array[jobindex] -> jstatus = JOB_ABORTED;
+					sf_job_status(jobindex, JOB_ABORTED);
+					sf_job_finished(jobindex, 1);
+					//for job_delete
+					job_array[jobindex] -> todelete = time(NULL);
+				}
+			}
 		}
-		else{
-			printer_array[printerindex] -> pstatus = PRINTER_IDLE;
-			sf_printer_status(printer_array[printerindex] -> name, PRINTER_IDLE);
-			job_array[jobindex] -> jstatus = JOB_ABORTED;
-			sf_job_status(jobindex, JOB_ABORTED);
-			sf_job_finished(jobindex, 1);
-		}
-
-		if(sig == SIGSTOP){//pause
-
-
-		}
-		if(sig == SIGCONT){ //resume
-
-		}
-		if(sig == SIGTERM){//cancel
-
-		}
-
-		//when you make job_array[jobindex] = NULL, call sf_job_deleted
 	}
 }
 
