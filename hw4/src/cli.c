@@ -621,6 +621,12 @@ int valid_printer(char *name){
 void starting_job(PRINTER *printer, JOB *job){
 	//return pid of the fork
 	setpgid(0, 0);
+	//check if fd are valid
+	if(imp_connect_to_printer(printer -> name, printer->file -> name, PRINTER_NORMAL) < 0)
+		exit(1);
+	if(open(job -> filename, O_RDONLY) < 0)
+		exit(1);
+
 	int fd[2];
 	int status;
 	//with the pipeline
