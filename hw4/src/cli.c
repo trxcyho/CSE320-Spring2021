@@ -61,6 +61,9 @@ int printer_count = 0; //make sure it dont go over 32 when adding
 int quit = 0; //when to exit cli
 int intialization = 0;
 
+volatile int concurrent;
+int processing_jobs = 0; //keeps track of amount of jobs being processed
+
 
 
 int run_cli(FILE *in, FILE *out)
@@ -123,6 +126,13 @@ int run_cli(FILE *in, FILE *out)
 			delete_jobs();
 
 	    }
+	}
+	if(in == stdin || quit == 1){
+		sigset_t mask;
+		while(processing_jobs != 0){
+			sigsuspend(&mask);
+			//TODO: reap all processes
+		}
 	}
 	if(in != stdin && quit == 1)
 		return -1;
@@ -388,7 +398,7 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("signal not sucessfully sent to child");
 			return -1;
 		}
-		//TODO: call sigcont?
+		//call sigcont?
 		outcome = killpg(job_pid[jnum], SIGCONT);
 		if(outcome < 0){
 			sf_cmd_error("signal not sucessfully sent to child");
@@ -561,6 +571,7 @@ void starting_job(PRINTER *printer, JOB *job){
 			if(processid < 0)
 				exit(1);
 			else if(processid == 0){
+				// TODO: sigpromask();
 				if(i == 0){
 					dup2(open(job -> filename, O_RDONLY) , STDIN_FILENO);
 				}
@@ -587,6 +598,11 @@ void starting_job(PRINTER *printer, JOB *job){
 						exit(1);
 				else
 					exit(1);
+				//TODO: convert to concurrent with another sighandler
+				pid_t childpid;
+				while((childpid = waitpid(-1, &status, WNOHANG)) > 0){
+					//you can do this :3
+				}
 			}
 		}
 	}
@@ -633,6 +649,7 @@ void look_for_jobs(){
 								sf_job_started(j, loopprinter -> name, pid, path);
 								printer_pid[i] = pid;
 								job_pid[j] = pid;
+								processing_jobs++;
 							}
 						}
 
@@ -675,6 +692,7 @@ void sigchild_handler(int sig){
 					sf_job_finished(jobindex, 0);
 					//for job_delete
 					job_array[jobindex] -> todelete = time(NULL);
+					processing_jobs--;
 				}
 				else{
 					printer_array[printerindex] -> pstatus = PRINTER_IDLE;
@@ -684,6 +702,7 @@ void sigchild_handler(int sig){
 					sf_job_finished(jobindex, 1);
 					//for job_delete
 					job_array[jobindex] -> todelete = time(NULL);
+					processing_jobs--;
 				}
 			}
 		}
@@ -724,6 +743,10 @@ void delete_jobs(){
 					sf_job_status(i, JOB_DELETED);
 					job_array[i] = NULL;
 					sf_job_deleted(i);
+					pid_t finishedpid = job_pid[i];
+					int print_index = printer_index_from_pid(finishedpid);
+					if(print_index >= 0)
+						printer_pid[print_index] = 0;
 					job_pid[i] = 0;
 				}
 			}
