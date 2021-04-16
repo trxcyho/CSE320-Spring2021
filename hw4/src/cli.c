@@ -28,6 +28,7 @@ int valid_printer(char *name);
 void starting_job(PRINTER *printer, JOB *job);
 void look_for_jobs();
 void sigchild_handler(int sig);
+void master_process_handler(int sig);
 int job_index_from_pid(pid_t pid);
 int printer_index_from_pid(pid_t pid);
 void delete_jobs();
@@ -62,6 +63,7 @@ int quit = 0; //when to exit cli
 int intialization = 0;
 
 volatile int concurrent;
+volatile int reaping_var;
 int processing_jobs = 0; //keeps track of amount of jobs being processed
 
 
@@ -104,7 +106,7 @@ int run_cli(FILE *in, FILE *out)
 	}
 	else{
 		while(!quit){
-	    	look_for_jobs();
+	    	sf_set_readline_signal_hook(look_for_jobs);
 	    	char* inputcommand = sf_readline("imp> ");
 			//if input command is NULL ->return -1//do we stop execution of processes, free everything
 			if(inputcommand == NULL){//if sf_readline is EOF
@@ -129,9 +131,11 @@ int run_cli(FILE *in, FILE *out)
 	}
 	if(in == stdin || quit == 1){
 		sigset_t mask;
+		sigfillset(&mask);
+		sigdelset(&mask, SIGCHLD);
 		while(processing_jobs != 0){
 			sigsuspend(&mask);
-			//TODO: reap all processes
+			//reap all processes
 		}
 	}
 	if(in != stdin && quit == 1)
@@ -390,8 +394,13 @@ int operation(int num_args, char** arguments, FILE *out){
 		}
 		//cancel a job
 		if(job_pid[jnum] == 0){
-			sf_cmd_error("job isn't running");
-			return -1;
+			//job isnt running
+			job_array[jnum] -> jstatus = JOB_ABORTED;
+			sf_job_status(jnum, JOB_ABORTED);
+			sf_job_aborted(jnum, 1);
+			job_array[jnum] -> todelete = time(NULL);
+			sf_cmd_ok();
+			return 0;
 		}
 		int outcome = killpg(job_pid[jnum], SIGTERM);
 		if(outcome < 0){
@@ -421,7 +430,7 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("job not defined");
 			return -1;
 		}
-		if(job_pid[jnum] == 0){
+		if(job_array[jnum] -> jstatus == JOB_FINISHED || job_pid[jnum] == 0){
 			sf_cmd_error("job isn't running");
 			return -1;
 		}
@@ -447,7 +456,7 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("job not defined");
 			return -1;
 		}
-		if(job_pid[jnum] == 0){
+		if(job_array[jnum] -> jstatus == JOB_FINISHED || job_pid[jnum] == 0){
 			sf_cmd_error("job isn't running");
 			return -1;
 		}
@@ -497,10 +506,11 @@ int operation(int num_args, char** arguments, FILE *out){
 		}
 		printer -> pstatus = PRINTER_IDLE;
 		sf_printer_status(printer->name, printer->pstatus);
+		sf_cmd_ok();
 		//if able to, look through jobs, fork, pipe, and fork
 		look_for_jobs();
 
-		sf_cmd_ok();
+
 		return 0;
 	}
 
@@ -565,13 +575,20 @@ void starting_job(PRINTER *printer, JOB *job){
 	}
 	else{
 		int trackprev = 0;
+		signal(SIGCHLD, master_process_handler);
 		for(int i = 0; i < counter; i++){
 			pipe(fd);
 			pid_t processid = fork();
 			if(processid < 0)
 				exit(1);
 			else if(processid == 0){
-				// TODO: sigpromask();
+				//sigpromask();
+				sigset_t mask;
+				sigemptyset(&mask);
+				sigaddset(&mask, SIGTERM);
+				if(sigprocmask(SIG_UNBLOCK, & mask, NULL) < 0)
+					exit(1); //exit with error?
+
 				if(i == 0){
 					dup2(open(job -> filename, O_RDONLY) , STDIN_FILENO);
 				}
@@ -588,22 +605,16 @@ void starting_job(PRINTER *printer, JOB *job){
 				execvp(convert1[i] -> cmd_and_args[0], convert1[i] -> cmd_and_args);
 				exit(0);
 			} else {
-
-				waitpid(processid, &status, 0);
 				trackprev = fd[0];
-				if(WIFEXITED(status))
-					if(WEXITSTATUS(status) == 0)
-						exit(0);
-					else
-						exit(1);
-				else
-					exit(1);
 				//TODO: convert to concurrent with another sighandler
-				pid_t childpid;
-				while((childpid = waitpid(-1, &status, WNOHANG)) > 0){
-					//you can do this :3
-				}
 			}
+		}
+		sigset_t mask;
+		sigfillset(&mask);
+		sigdelset(&mask, SIGCHLD);
+		while(concurrent != counter){
+			sigsuspend(&mask);
+			//reap all processes
 		}
 	}
 }
@@ -613,7 +624,7 @@ void look_for_jobs(){
 		PRINTER *loopprinter = printer_array[i];
 		if(loopprinter -> pstatus == PRINTER_IDLE){
 			for(int j = 0; j < MAX_JOBS; j++){
-				if(job_array[j] != NULL){
+				if(job_array[j] != NULL && (job_array[j] -> jstatus == JOB_CREATED)){
 					int eligibility = job_array[j] -> eligible;
 					if((eligibility & (0x1 << i)) == 1){
 						//check if conversion between types
@@ -631,6 +642,7 @@ void look_for_jobs(){
 							}
 							//child process
 							else if(pid == 0){
+								concurrent = 0;
 								starting_job(loopprinter, job_array[j]);
 							}
 							//main process
@@ -704,6 +716,23 @@ void sigchild_handler(int sig){
 					job_array[jobindex] -> todelete = time(NULL);
 					processing_jobs--;
 				}
+			}
+		}
+	}
+}
+
+void master_process_handler(int sig){
+	int status;
+	pid_t childpid;
+	while((childpid = waitpid(-1, &status, WNOHANG)) > 0){
+		if(sig == SIGCHLD){
+			if(WIFSIGNALED(status) || WIFEXITED(status)){ //child was terminated
+				concurrent++;
+				if(WEXITSTATUS(status) == 0){
+					exit(1);
+				}
+				else
+					exit(1);
 			}
 		}
 	}
