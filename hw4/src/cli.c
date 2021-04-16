@@ -101,7 +101,7 @@ int run_cli(FILE *in, FILE *out)
 		while (filecommand != NULL){
 			look_for_jobs();
 			arguments = convert_to_commands(filecommand);
-			operation(num_args, arguments, out);
+			int bquit = operation(num_args, arguments, out);
 			//reset everything
 			for(int i = 0; i < num_args; i++)
 				free(arguments[i]);
@@ -110,6 +110,8 @@ int run_cli(FILE *in, FILE *out)
 
 			delete_jobs();
 			//read next line
+			if(bquit == 1)
+				break;
 			filecommand = readfile(in);
 		}
 	}
@@ -125,7 +127,7 @@ int run_cli(FILE *in, FILE *out)
 			}
 	    	arguments = convert_to_commands(inputcommand);
 	    	// printf("%s\n", arguments[0]);
-	    	operation(num_args, arguments, out);
+	    	int bquit = operation(num_args, arguments, out);
 
 	    	//free anything that is needed
 			//if quit is called return 0
@@ -135,6 +137,9 @@ int run_cli(FILE *in, FILE *out)
 			num_args = 0;
 
 			delete_jobs();
+
+			if(bquit == 1)
+				break;
 
 	    }
 	}
@@ -160,7 +165,7 @@ char *readfile(FILE *in){
 	while(1){
 		c = fgetc(in);
 		if(c == EOF)
-			return NULL;
+			return buffer;
 		if(c == '\n'){
 			buffer[counter] = '\0';
 			return buffer;
@@ -222,7 +227,7 @@ int operation(int num_args, char** arguments, FILE *out){
 		free_memory();
 		quit = 1;
 		sf_cmd_ok();
-		return 0;
+		return 1;
 	}
 	if (strcmp("printers", arguments[0]) == 0){
 		if(num_args != 1){
