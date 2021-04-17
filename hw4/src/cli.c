@@ -61,6 +61,7 @@ int printer_count = 0; //make sure it dont go over 32 when adding
 // int num_jobs = 0;//make sure it dont go over 64 when adding
 int quit = 0; //when to exit cli
 int intialization = 0;
+int batch_flag = 0;
 
 volatile int concurrent;
 volatile int reaping_var;
@@ -83,6 +84,15 @@ int run_cli(FILE *in, FILE *out)
 	intialization = 1;
 
 	char **arguments;
+	//sigaction
+	struct sigaction act;
+	memset(&act, 0, sizeof(act));
+	sigfillset(&act.sa_mask);
+	if(sigaction(SIGCHLD, &act, 0)){
+		perror("sigaction");
+		return -1;
+	}
+
 	signal(SIGCHLD, sigchild_handler);
 	if(in == NULL)
 		return -1;
@@ -101,7 +111,7 @@ int run_cli(FILE *in, FILE *out)
 
 			delete_jobs();
 			//read next line
-			if(quit == 1)
+			if(quit == 1 || batch_flag == 1)
 				break;
 			filecommand = readfile(in);
 		}
@@ -153,6 +163,7 @@ char *readfile(FILE *in){
 	while(1){
 		c = fgetc(in);
 		if(c == EOF){
+			batch_flag = 1;
 			buffer[counter] = '\0';
 			return buffer;
 		}
@@ -224,6 +235,9 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
+		sigset_t set, oldset;
+		sigfillset(&set);
+		sigprocmask(SIG_SETMASK, &set, &oldset);
 		//print all printers
 		//id, name, type, status
 		for(int i = 0; i < printer_count; i++){
@@ -231,8 +245,8 @@ int operation(int num_args, char** arguments, FILE *out){
 			fprintf(out, "PRINTER: id=%d, name=%s, type=%s, status=%s\n", i, printer -> name,
 				printer -> file -> name, printer_status_names[printer -> pstatus]);
 		}
-
 		sf_cmd_ok();
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
 		return 0;
 	}
 	if (strcmp("jobs", arguments[0]) == 0){
@@ -240,6 +254,9 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
+		sigset_t set, oldset;
+		sigfillset(&set);
+		sigprocmask(SIG_SETMASK, &set, &oldset);
 		//print all jobs
 		//type, status, eligible printers, file
 		for(int i = 0; i < MAX_JOBS; i++){
@@ -250,6 +267,7 @@ int operation(int num_args, char** arguments, FILE *out){
 			}
 		}
 		sf_cmd_ok();
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
 		return 0;
 	}
 	if(strcmp("type", arguments[0]) == 0){
@@ -257,6 +275,7 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
+
 		FILE_TYPE *type = find_type(arguments[1]);
 		if(type != NULL){
 			sf_cmd_error("type defined already");
@@ -275,16 +294,21 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("max printers reached");
 			return -1;
 		}
+		sigset_t set, oldset;
+		sigfillset(&set);
+		sigprocmask(SIG_SETMASK, &set, &oldset);
 
 		//check to make sure name is unique first
 		if(valid_printer(arguments[1]) != -1){
 			sf_cmd_error("printer name not unique");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		//make sure filetype is valid
 		FILE_TYPE *type = find_type(arguments[2]);
 		if(type == NULL){
 			sf_cmd_error("type not defined");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		PRINTER *newprinter = malloc(sizeof(PRINTER));
@@ -298,6 +322,7 @@ int operation(int num_args, char** arguments, FILE *out){
 		printer_array[printer_count] = newprinter;
 		printer_count++;
 		sf_cmd_ok();
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
 		return 0;
 	}
 
@@ -339,10 +364,16 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
+
+		sigset_t set, oldset;
+		sigfillset(&set);
+		sigprocmask(SIG_SETMASK, &set, &oldset);
+
 		//make sure arg1 is a valid filename for a valid type
 		FILE_TYPE *file_type = infer_file_type(arguments[1]);
 		if(file_type == NULL){
 			sf_cmd_error("type of file not defined");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		//loop through rest of the arguments and make sure its a valid printer
@@ -352,6 +383,7 @@ int operation(int num_args, char** arguments, FILE *out){
 				int index = valid_printer(arguments[i]);
 				if(index == -1){
 					sf_cmd_error("printer not found");
+					sigprocmask(SIG_SETMASK, &oldset, NULL);
 					return -1;
 				}
 				eligible_printers = eligible_printers | (0x1 << index);
@@ -373,11 +405,13 @@ int operation(int num_args, char** arguments, FILE *out){
 				sf_job_created(i, newjob -> filename, newjob -> file -> name);
 				job_array[i] = newjob;
 				sf_cmd_ok();
+				sigprocmask(SIG_SETMASK, &oldset, NULL);
 				return 0;
 			}
 		}
 		//if comes out of for loop, job array is full
 		sf_cmd_error("max jobs reached");
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
 		return -1;
 	}
 
@@ -392,8 +426,14 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("job num invalid");
 			return -1;
 		}
+
+		sigset_t set, oldset;
+		sigfillset(&set);
+		sigprocmask(SIG_SETMASK, &set, &oldset);
+
 		if(job_array[jnum] == NULL){
 			sf_cmd_error("job not defined");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		//cancel a job
@@ -404,20 +444,24 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_job_aborted(jnum, 1);
 			job_array[jnum] -> todelete = time(NULL);
 			sf_cmd_ok();
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return 0;
 		}
 		int outcome = killpg(job_pid[jnum], SIGTERM);
 		if(outcome < 0){
 			sf_cmd_error("signal not sucessfully sent to child");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		//call sigcont?
 		outcome = killpg(job_pid[jnum], SIGCONT);
 		if(outcome < 0){
 			sf_cmd_error("signal not sucessfully sent to child");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		sf_cmd_ok();
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
 		return 0;
 	}
 	if (strcmp("pause", arguments[0]) == 0){
@@ -430,20 +474,29 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("job num invalid");
 			return -1;
 		}
+
+		sigset_t set, oldset;
+		sigfillset(&set);
+		sigprocmask(SIG_SETMASK, &set, &oldset);
+
 		if(job_array[jnum] == NULL){
 			sf_cmd_error("job not defined");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		if(job_array[jnum] -> jstatus == JOB_FINISHED || job_pid[jnum] == 0){
 			sf_cmd_error("job isn't running");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		int outcome = killpg(job_pid[jnum], SIGSTOP);
 		if(outcome < 0){
 			sf_cmd_error("signal not sucessfully sent to child");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		sf_cmd_ok();
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
 		return 0;
 	}
 	if (strcmp("resume", arguments[0]) == 0){
@@ -456,20 +509,29 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("job num invalid");
 			return -1;
 		}
+
+		sigset_t set, oldset;
+		sigfillset(&set);
+		sigprocmask(SIG_SETMASK, &set, &oldset);
+
 		if(job_array[jnum] == NULL){
 			sf_cmd_error("job not defined");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		if(job_array[jnum] -> jstatus == JOB_FINISHED || job_pid[jnum] == 0){
 			sf_cmd_error("job isn't running");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		int outcome = killpg(job_pid[jnum], SIGCONT);
 		if(outcome < 0){
 			sf_cmd_error("signal not sucessfully sent to child");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		sf_cmd_ok();
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
 		return 0;
 	}
 
@@ -479,9 +541,15 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
+
+		sigset_t set, oldset;
+		sigfillset(&set);
+		sigprocmask(SIG_SETMASK, &set, &oldset);
+
 		int indexofprinter = valid_printer(arguments[1]);
 		if (indexofprinter == -1){
 			sf_cmd_error("printer not found");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		//change printer status to disabled (sf_printer_status(char *name, PRINTER_STATUS status))
@@ -489,6 +557,7 @@ int operation(int num_args, char** arguments, FILE *out){
 		printer -> pstatus = PRINTER_DISABLED;
 		sf_printer_status(printer->name, printer->pstatus);
 		sf_cmd_ok();
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
 		return 0;
 
 	}
@@ -497,20 +566,28 @@ int operation(int num_args, char** arguments, FILE *out){
 			sf_cmd_error("arg count");
 			return -1;
 		}
+
+		sigset_t set, oldset;
+		sigfillset(&set);
+		sigprocmask(SIG_SETMASK, &set, &oldset);
+
 		int indexofprinter = valid_printer(arguments[1]);
 		if (indexofprinter == -1){
 			sf_cmd_error("printer not found");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		PRINTER *printer = printer_array[indexofprinter];
 		//change printer status to idle (sf_printer_status(char *name, PRINTER_STATUS status))
 		if(printer -> pstatus != PRINTER_DISABLED){
 			sf_cmd_error("printer was not disabled in first place");
+			sigprocmask(SIG_SETMASK, &oldset, NULL);
 			return -1;
 		}
 		printer -> pstatus = PRINTER_IDLE;
 		sf_printer_status(printer->name, printer->pstatus);
 		sf_cmd_ok();
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
 		//if able to, look through jobs, fork, pipe, and fork
 		look_for_jobs();
 
@@ -545,6 +622,13 @@ int valid_printer(char *name){
 void starting_job(PRINTER *printer, JOB *job){
 	//return pid of the fork
 	setpgid(0, 0);
+	//check if fd are valid
+	int printerfd = imp_connect_to_printer(printer -> name, printer->file -> name, PRINTER_NORMAL);
+	if(printerfd < 0)
+		exit(1);
+	if(open(job -> filename, O_RDONLY) < 0)
+		exit(1);
+
 	int fd[2];
 	int status;
 	//with the pipeline
@@ -562,7 +646,7 @@ void starting_job(PRINTER *printer, JOB *job){
 		else if(processid == 0){
 			//make an array or char** (bin/cat, rest null)
 			char * executearray[] = {(char *)"/bin/cat", NULL};
-			dup2(imp_connect_to_printer(printer -> name, printer->file -> name, PRINTER_NORMAL), STDOUT_FILENO);
+			dup2(printerfd, STDOUT_FILENO);
 			dup2(open(job -> filename, O_RDONLY) , STDIN_FILENO);
 			execvp(executearray[0], executearray);
 			exit(0);
@@ -601,7 +685,7 @@ void starting_job(PRINTER *printer, JOB *job){
 				}
 				//stdout
 				if(i == (counter - 1)){
-					dup2(imp_connect_to_printer(printer -> name, printer->file -> name, PRINTER_NORMAL), STDOUT_FILENO);
+					dup2(printerfd, STDOUT_FILENO);
 				}
 				else{
 					dup2(fd[1], STDOUT_FILENO);
@@ -620,6 +704,7 @@ void starting_job(PRINTER *printer, JOB *job){
 			sigsuspend(&mask);
 			//reap all processes
 		}
+		exit(reaping_var);
 	}
 }
 
@@ -729,15 +814,10 @@ void master_process_handler(int sig){
 	int status;
 	pid_t childpid;
 	while((childpid = waitpid(-1, &status, WNOHANG)) > 0){
-		if(sig == SIGCHLD){
-			if(WIFSIGNALED(status) || WIFEXITED(status)){ //child was terminated
-				concurrent++;
-				if(WEXITSTATUS(status) == 0){
-					exit(1);
-				}
-				else
-					exit(1);
-			}
+		concurrent++;
+		if(WIFSIGNALED(status) || WIFEXITED(status)){ //child was terminated
+			if(WEXITSTATUS(status) != 0)
+				reaping_var = 1;
 		}
 	}
 }
