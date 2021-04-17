@@ -626,7 +626,8 @@ void starting_job(PRINTER *printer, JOB *job){
 	int printerfd = imp_connect_to_printer(printer -> name, printer->file -> name, PRINTER_NORMAL);
 	if(printerfd < 0)
 		exit(1);
-	if(open(job -> filename, O_RDONLY) < 0)
+	int filefd = open(job -> filename, O_RDONLY);
+	if(filefd < 0)
 		exit(1);
 
 	int fd[2];
@@ -647,7 +648,7 @@ void starting_job(PRINTER *printer, JOB *job){
 			//make an array or char** (bin/cat, rest null)
 			char * executearray[] = {(char *)"/bin/cat", NULL};
 			dup2(printerfd, STDOUT_FILENO);
-			dup2(open(job -> filename, O_RDONLY) , STDIN_FILENO);
+			dup2(filefd , STDIN_FILENO);
 			execvp(executearray[0], executearray);
 			exit(0);
 		} else{
@@ -678,7 +679,7 @@ void starting_job(PRINTER *printer, JOB *job){
 					exit(1); //exit with error?
 
 				if(i == 0){
-					dup2(open(job -> filename, O_RDONLY) , STDIN_FILENO);
+					dup2(filefd, STDIN_FILENO);
 				}
 				else {
 					dup2(trackprev, STDIN_FILENO);
