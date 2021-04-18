@@ -422,7 +422,7 @@ int operation(int num_args, char** arguments, FILE *out){
 			return -1;
 		}
 		int jnum = string_to_number(arguments[1]);
-		if(jnum < 0){
+		if(jnum < 0 || jnum >= MAX_JOBS){
 			sf_cmd_error("job num invalid");
 			return -1;
 		}
@@ -470,7 +470,7 @@ int operation(int num_args, char** arguments, FILE *out){
 			return -1;
 		}
 		int jnum = string_to_number(arguments[1]);
-		if(jnum < 0){
+		if(jnum < 0 || jnum >= MAX_JOBS){
 			sf_cmd_error("job num invalid");
 			return -1;
 		}
@@ -505,7 +505,7 @@ int operation(int num_args, char** arguments, FILE *out){
 			return -1;
 		}
 		int jnum = string_to_number(arguments[1]);
-		if(jnum < 0){
+		if(jnum < 0 || jnum >= MAX_JOBS){
 			sf_cmd_error("job num invalid");
 			return -1;
 		}
