@@ -8,6 +8,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+//extra
+#include <getopt.h>
+#include <ctype.h>
+#include <csapp.h>
 
 #include "debug.h"
 #include "server.h"
@@ -15,15 +19,55 @@
 
 static void terminate(int);
 
+//prototypes
+void terminate_handler(int sig);
 /*
  * "Charla" chat server.
  *
  * Usage: charla <port>
  */
 int main(int argc, char* argv[]){
+
+    //install sigaction with SIGUP
+    struct sigaction act, old_act;
+    act.sa_handler = terminate_handler;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = SA_RESTART;
+    if(sigaction(SIGHUP, &act, &old_act)){
+        perror("sigaction");
+        return 1;
+    }
+
     // Option processing should be performed here.
     // Option '-p <port>' is required in order to specify the port number
     // on which the server should listen.
+    char *port_num = NULL;
+    int p_flag = 0;
+    int c;
+    while((c = getopt(argc, argv, "p:")) > 0){
+        switch(c){
+            case 'p':
+                //read next few digits
+                p_flag = 1;
+                port_num = optarg;
+                for(int i = 0; i < strlen(port_num); i++){
+                    if(!isdigit(port_num[i])){
+                        port_num = NULL;
+                        break;
+                    }
+                }
+                break;
+            //-h specify host if you want
+            default:
+                fprintf(stderr, "invalid option  %c\n", c);
+                break;
+        }
+    }
+    if(p_flag == 0){
+        fprintf(stderr, "USAGE: -p <port> [-h <host>]");
+        return 1;
+    }
+
 
     // Perform required initializations of the client_registry and
     // player_registry.
@@ -35,6 +79,19 @@ int main(int argc, char* argv[]){
     // run function charla_client_service().  In addition, you should install
     // a SIGHUP handler, so that receipt of SIGHUP will perform a clean
     // shutdown of the server.
+
+    int server = Open_listenfd(port_num);
+    int client_socket;
+    struct sockaddr_in client;
+    socklen_t addrlen = sizeof(struct sockaddr_in);
+
+    while((client_socket = accept(server, (struct sockaddr *)&client, &addrlen))){
+        // pthread_t thread;
+
+        //pthread_create(&thread, NULL, chla_client_service, (new socket number?))
+
+    }
+
 
     fprintf(stderr, "You have to finish implementing main() "
 	    "before the server will function.\n");
@@ -56,4 +113,9 @@ static void terminate(int status) {
 
     debug("%ld: Server terminating", pthread_self());
     exit(status);
+}
+
+void terminate_handler(int sig){
+    terminate(EXIT_SUCCESS);//what status to terminate?
+
 }
