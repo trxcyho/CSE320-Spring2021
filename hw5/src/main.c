@@ -59,12 +59,12 @@ int main(int argc, char* argv[]){
                 break;
             //-h specify host if you want
             default:
-                fprintf(stderr, "invalid option  %c\n", c);
+                printf("invalid option  %c\n", c);
                 break;
         }
     }
     if(p_flag == 0){
-        fprintf(stderr, "USAGE: -p <port> [-h <host>]");
+        printf("USAGE: -p <port> [-h <host>]");
         return 1;
     }
 
@@ -80,17 +80,28 @@ int main(int argc, char* argv[]){
     // a SIGHUP handler, so that receipt of SIGHUP will perform a clean
     // shutdown of the server.
 
-    int server = Open_listenfd(port_num);
+    //if port number is null of less than 1024, printf error and return?
+
+    int server = Open_listenfd(port_num); //conect to designated port_num
+
     int client_socket;
     struct sockaddr_in client;
     socklen_t addrlen = sizeof(struct sockaddr_in);
+    int *socket;
 
-    while((client_socket = accept(server, (struct sockaddr *)&client, &addrlen))){
-        // pthread_t thread;
+    while((client_socket = accept(server, (struct sockaddr *)&client, &addrlen)) > 0){
+        pthread_t thread;
+        socket = malloc(sizeof(int));
+        *socket = client_socket;
 
-        //pthread_create(&thread, NULL, chla_client_service, (new socket number?))
+        if(pthread_create(&thread, NULL, chla_client_service, socket) < 0){//error
+            printf("failed to create thread\n");
+            return 1;
+        }
 
     }
+    //throw error if client socket not valid?
+    //terminate and exitsuccess???
 
 
     fprintf(stderr, "You have to finish implementing main() "
