@@ -83,6 +83,8 @@ int main(int argc, char* argv[]){
     //if port number is null of less than 1024, printf error and return?
 
     int server = Open_listenfd(port_num); //conect to designated port_num
+    if(server < 0)
+        return 1;
 
     int client_socket;
     struct sockaddr_in client;
