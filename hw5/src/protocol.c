@@ -88,7 +88,7 @@ int proto_recv_packet(int fd, CHLA_PACKET_HEADER *hdr, void **payload){
 		*payload = malloc(length);
 
 		while(bytes_writen < length){
-			amount = rio_readn(fd, *payload, (length - bytes_writen));
+			amount = rio_readn(fd, *(payload + bytes_writen), (length - bytes_writen));
 			if(amount <= 0){
 				free(payload);
 				return -1;
@@ -142,7 +142,7 @@ char *typetostring(CHLA_PACKET_HEADER *hdr){
 			typestr = "bounce";
 			break;
 		default:
-			typestr = NULL;
+			typestr = "invalid"; //should never be printed
 			break;
 	}
 	return typestr;
