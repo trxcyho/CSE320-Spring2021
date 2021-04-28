@@ -107,7 +107,7 @@ typedef struct {
 /*
  * Send a packet with a specified header and payload.
  *   fd - file descriptor on which packet is to be sent
- *   hdr - the packet header, with multi-byte fields in host byte order
+ *   hdr - the packet header, with multi-byte fields in network byte order
  *   payload - pointer to packet payload, or NULL, if none.
  *
  * Multi-byte fields in the header are assumed to be in network byte order.
