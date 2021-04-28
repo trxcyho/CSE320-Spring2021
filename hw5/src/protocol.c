@@ -34,7 +34,7 @@ int proto_send_packet(int fd, CHLA_PACKET_HEADER *hdr, void *payload){
 	int bytes_read = 0;
 	int amount;
 	while(bytes_read < sizeof(CHLA_PACKET_HEADER)){
-		amount = rio_writen(fd, (hdr + bytes_read), sizeof(CHLA_PACKET_HEADER));
+		amount = rio_writen(fd, (hdr + bytes_read), (sizeof(CHLA_PACKET_HEADER)-bytes_read));
 		if(amount <= 0)
 			return -1; //rio_writen sets errno
 		bytes_read += amount;
@@ -44,7 +44,7 @@ int proto_send_packet(int fd, CHLA_PACKET_HEADER *hdr, void *payload){
 	bytes_read = 0;
 	if(length > 0){
 		while(bytes_read < length){
-			amount = rio_writen(fd, (payload+ bytes_read), length);
+			amount = rio_writen(fd, (payload+ bytes_read), (length - bytes_read));
 			if(amount <= 0)
 				return -1;
 			bytes_read+= amount;
@@ -73,7 +73,7 @@ int proto_recv_packet(int fd, CHLA_PACKET_HEADER *hdr, void **payload){
 	int bytes_writen = 0;
 	int amount;
 	while(bytes_writen < sizeof(CHLA_PACKET_HEADER)){
-		amount = rio_readn(fd, (hdr + bytes_writen), sizeof(CHLA_PACKET_HEADER));
+		amount = rio_readn(fd, (hdr + bytes_writen), (sizeof(CHLA_PACKET_HEADER)-bytes_writen));
 		if(amount <= 0){
 			return -1;
 		}
@@ -88,7 +88,7 @@ int proto_recv_packet(int fd, CHLA_PACKET_HEADER *hdr, void **payload){
 		*payload = malloc(length);
 
 		while(bytes_writen < length){
-			amount = rio_readn(fd, *payload, length);
+			amount = rio_readn(fd, *payload, (length - bytes_writen));
 			if(amount <= 0){
 				free(payload);
 				return -1;
@@ -96,11 +96,11 @@ int proto_recv_packet(int fd, CHLA_PACKET_HEADER *hdr, void **payload){
 			bytes_writen += amount;
 		}
 	}
-	debug("%s\n", (char *)*payload);
+	// debug("%s\n", (char *)*payload);
 	if(length == 0)
 		debug("type= %s, payload_length= %d, msgid= %d\n", typetostring(hdr), length, ntohl(hdr -> msgid));
 	else
-		debug("type= %s, payload_length= %d, msgid= %d, payload:[%s]\n", typetostring(hdr), length, ntohl(hdr -> msgid), (char *)payload);
+		debug("type= %s, payload_length= %d, msgid= %d, payload:[%s]\n", typetostring(hdr), length, ntohl(hdr -> msgid), (char *)*payload);
 
 	debug("recieved\n");
 	return 0;
