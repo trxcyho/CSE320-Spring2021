@@ -31,24 +31,15 @@ int proto_send_packet(int fd, CHLA_PACKET_HEADER *hdr, void *payload){
 		debug("type= %s, payload_length= %d, msgid= %d, payload:[%s]\n", typetostring(hdr), length, htonl(hdr -> msgid), (char *)payload);
 
 	//write header
-	int bytes_read = 0;
-	int amount;
-	while(bytes_read < sizeof(CHLA_PACKET_HEADER)){
-		amount = rio_writen(fd, (hdr + bytes_read), (sizeof(CHLA_PACKET_HEADER)-bytes_read));
-		if(amount <= 0)
+
+	if(rio_writen(fd, hdr, sizeof(CHLA_PACKET_HEADER)) <=0 )
 			return -1; //rio_writen sets errno
-		bytes_read += amount;
-	}
 
 	//write payload
-	bytes_read = 0;
 	if(length > 0){
-		while(bytes_read < length){
-			amount = rio_writen(fd, (payload+ bytes_read), (length - bytes_read));
-			if(amount <= 0)
-				return -1;
-			bytes_read+= amount;
-		}
+		if(rio_writen(fd, payload, length) <= 0)
+			return -1;
+
 	}
 	// debug("done sending packet\n");
 	return 0;
@@ -70,31 +61,20 @@ int proto_send_packet(int fd, CHLA_PACKET_HEADER *hdr, void *payload){
  * and errno is set.
  */
 int proto_recv_packet(int fd, CHLA_PACKET_HEADER *hdr, void **payload){
-	int bytes_writen = 0;
-	int amount;
-	while(bytes_writen < sizeof(CHLA_PACKET_HEADER)){
-		amount = rio_readn(fd, (hdr + bytes_writen), (sizeof(CHLA_PACKET_HEADER)-bytes_writen));
-		if(amount <= 0){
-			return -1;
-		}
-		bytes_writen+=amount;
+
+	if(rio_readn(fd, hdr, sizeof(CHLA_PACKET_HEADER)) <= 0){
+		return -1;
 	}
+
 	uint32_t length = ntohl(hdr -> payload_length);
 
-	//not reading payload properly
-	// char temp[length];
-	bytes_writen = 0;
 	if(length > 0){
 		*payload = malloc(length);
-
-		while(bytes_writen < length){
-			amount = rio_readn(fd, *(payload + bytes_writen), (length - bytes_writen));
-			if(amount <= 0){
-				free(payload);
-				return -1;
-			}
-			bytes_writen += amount;
+		if(rio_readn(fd, *payload, length) <= 0){
+			free(payload);
+			return -1;
 		}
+
 	}
 	// debug("%s\n", (char *)*payload);
 	if(length == 0)

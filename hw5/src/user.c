@@ -31,6 +31,7 @@ USER *user_create(char *handle){
 	new_user -> name = copy;
 	//set reference count
 	new_user -> ref_count = 1;
+	debug("Create user [%s]\n", new_user-> name);
 	return new_user;
 }
 
@@ -45,7 +46,7 @@ USER *user_create(char *handle){
  */
 USER *user_ref(USER *user, char *why){
 	user ->ref_count = (user -> ref_count) + 1;
-	debug("Reference Count increased: %s\n", why);
+	debug("Reference Count increased[%s] %s\n", user-> name, why);
 	return user;
 }
 
@@ -62,11 +63,12 @@ USER *user_ref(USER *user, char *why){
  */
 void user_unref(USER *user, char *why){
 	user -> ref_count = (user-> ref_count) -1;
-	debug("Reference coutn decreased: %s\n", why);
+	debug("Reference Count decreased[%s] %s\n", user-> name, why);
 	if((user->ref_count) == 0){
+		debug("Free [%s] because ref count = 0", user->name);
 		free(user-> name);
 		free(user);
-		debug("Free user becauser ref count = 0");
+
 	}
 }
 
