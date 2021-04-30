@@ -8,11 +8,11 @@
 #include <csapp.h>
 
 //prototypes
-
-struct user {
+typedef struct user {
 	char * name;
+	sem_t sem;
 	int ref_count;
-};
+}USER;
 
 /*
  * Create a new USER with a specified handle.  A private copy is
@@ -30,6 +30,7 @@ USER *user_create(char *handle){
 	strcpy(copy, handle);
 	new_user -> name = copy;
 	//set reference count
+	Sem_init(&(new_user->sem), 0, 1);
 	new_user -> ref_count = 1;
 	debug("Create user [%s]\n", new_user-> name);
 	return new_user;
@@ -45,8 +46,10 @@ USER *user_create(char *handle){
  * @return  The same USER object that was passed as a parameter.
  */
 USER *user_ref(USER *user, char *why){
+	P(&(user->sem));
 	user ->ref_count = (user -> ref_count) + 1;
-	debug("Reference Count increased[%s] %s\n", user-> name, why);
+	debug("Increased Reference Count[%s] (%d -> %d): %s\n", user-> name, (user ->ref_count) -1, user ->ref_count, why);
+	V(&(user->sem));
 	return user;
 }
 
@@ -62,13 +65,15 @@ USER *user_ref(USER *user, char *why){
  *
  */
 void user_unref(USER *user, char *why){
+	P(&(user->sem));
 	user -> ref_count = (user-> ref_count) -1;
-	debug("Reference Count decreased[%s] %s\n", user-> name, why);
+	debug("Decreased Reference Count[%s] (%d -> %d): %s\n", user-> name, (user ->ref_count)+1, user ->ref_count, why);
+	V(&(user->sem));
 	if((user->ref_count) == 0){
 		debug("Free [%s] because ref count = 0", user->name);
 		free(user-> name);
 		free(user);
-
+		//destroy semtex?
 	}
 }
 
