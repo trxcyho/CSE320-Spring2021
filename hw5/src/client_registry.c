@@ -41,6 +41,7 @@ void creg_fini(CLIENT_REGISTRY *cr){
 	for(int i = 0; i < cr -> num_clients; i++)
 		free(cr->client_array[i]);
 	free(cr);
+	debug("Client Registry freed");
 }
 
 /*
@@ -60,7 +61,7 @@ CLIENT *creg_register(CLIENT_REGISTRY *cr, int fd){
 	if(cr-> num_clients >= 64)
 		return NULL;
 	CLIENT *client = client_create(cr, fd);
-	if(client = NULL)
+	if(client == NULL)
 		return NULL;
 	P(&(cr-> sem));
 	cr->client_array[cr->num_clients] = malloc(sizeof(client));
@@ -87,6 +88,7 @@ CLIENT *creg_register(CLIENT_REGISTRY *cr, int fd){
  * @param client  The CLIENT to be unregistered.
  * @return 0  if unregistration succeeds, otherwise -1.
  */
+
 int creg_unregister(CLIENT_REGISTRY *cr, CLIENT *client){
 	int tracker = -1;
 	for(int i = 0; i < cr->num_clients; i++){
@@ -105,7 +107,7 @@ int creg_unregister(CLIENT_REGISTRY *cr, CLIENT *client){
 	}
 	cr->num_clients = (cr->num_clients) -1;
 	V(&(cr->sem));
-	debug("Unregister cliend fd %d (total connected: %d)", client -> fd, cr-> num_clients);
+	debug("Unregister cliend fd %d (total connected: %d)", client_get_fd(client), cr-> num_clients);
 	return 0;
 }
 
@@ -124,6 +126,7 @@ int creg_unregister(CLIENT_REGISTRY *cr, CLIENT *client){
  */
 CLIENT **creg_all_clients(CLIENT_REGISTRY *cr){
 
+	return NULL;
 }
 
 /*
@@ -138,4 +141,7 @@ CLIENT **creg_all_clients(CLIENT_REGISTRY *cr){
  *
  * @param cr  The client registry.
  */
-void creg_shutdown_all(CLIENT_REGISTRY *cr);
+void creg_shutdown_all(CLIENT_REGISTRY *cr){
+
+}
+

@@ -38,6 +38,7 @@ void ureg_fini(USER_REGISTRY *ureg){
 		free(head);
 	}
 	free(ureg);
+	debug("User Registry freed");
 }
 
 

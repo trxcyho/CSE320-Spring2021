@@ -45,6 +45,7 @@ USER *user_create(char *handle){
  * the reference counting.
  * @return  The same USER object that was passed as a parameter.
  */
+
 USER *user_ref(USER *user, char *why){
 	P(&(user->sem));
 	user ->ref_count = (user -> ref_count) + 1;
