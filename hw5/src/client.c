@@ -94,18 +94,18 @@ int client_login(CLIENT *client, char *handle){
 	//check if client logged out
 	if(client -> loggedin == 1)
 		return -1;
+
 	//lock current client?
 	// pthread_mutex_lock(&client -> client_mutex);
-	sem_t sem;
-	sem_init(&sem, 0, 1);
-	P(&sem);
+	pthread_mutex_t mutex;
+	pthread_mutex_init(&mutex, NULL);
+	pthread_mutex_lock(&mutex);
 	USER * user = ureg_register(user_registry, handle);
 	CLIENT **client_arr = creg_all_clients(client_registry);//from global
 	//loop through client_arr and see if any client logged in -> user handle equaivalent
 	int i = 0;
 	while(client_arr[i] != NULL){
 		debug("client while login");
-
 		if(client_arr[i] -> loggedin == 1){
 			if(strcmp(user_get_handle(client_arr[i]->user), handle) == 0){
 				debug("Can't login, user %s exists", handle);
@@ -113,7 +113,7 @@ int client_login(CLIENT *client, char *handle){
 			}
 		}
 		i++;
-		client_unref(client_arr[i], "for reference in clients list being discarded");
+		// client_unref(client_arr[i], "for reference in clients list being discarded");
 	}
 	free(client_arr);
 	debug("Login user %s", handle);
@@ -123,7 +123,7 @@ int client_login(CLIENT *client, char *handle){
 	client -> loggedin = 1;
 	client -> user = user;
 	client -> mailbox = mb_init(handle);
-	V(&sem);
+	pthread_mutex_unlock(&mutex);
 	// pthread_mutex_unlock(&client -> client_mutex);
 	debug("Client logged in (%s) mailbox:%p", handle, client -> mailbox);
 	return 0;

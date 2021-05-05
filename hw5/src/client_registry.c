@@ -87,7 +87,7 @@ CLIENT *creg_register(CLIENT_REGISTRY *cr, int fd){
  * @param cr  The client registry.
  * @param client  The CLIENT to be unregistered.
  * @return 0  if unregistration succeeds, otherwise -1.
- */
+*/
 
 int creg_unregister(CLIENT_REGISTRY *cr, CLIENT *client){
 	int tracker = -1;
@@ -125,8 +125,16 @@ int creg_unregister(CLIENT_REGISTRY *cr, CLIENT *client){
  * @return the list of clients as a NULL-terminated array.
  */
 CLIENT **creg_all_clients(CLIENT_REGISTRY *cr){
-
-	return NULL;
+	debug("in creg_all_clients");
+	P(&cr->sem);
+	CLIENT **list_clients = Malloc(sizeof(CLIENT*)*(cr->num_clients));
+	for(int i = 0; i < cr->num_clients; i++){
+		client_ref(cr->client_array[i], "reference in creg_all_clients");
+		list_clients[i] = cr->client_array[i];
+	}
+	list_clients[cr-> num_clients] = NULL;
+	V(&cr->sem);
+	return list_clients;
 }
 
 /*
@@ -142,6 +150,6 @@ CLIENT **creg_all_clients(CLIENT_REGISTRY *cr){
  * @param cr  The client registry.
  */
 void creg_shutdown_all(CLIENT_REGISTRY *cr){
-
+	debug("in creg_shutdown_all");
 }
 
