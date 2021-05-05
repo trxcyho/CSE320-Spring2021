@@ -61,10 +61,10 @@ CLIENT *creg_register(CLIENT_REGISTRY *cr, int fd){
 	if(cr-> num_clients >= 64)
 		return NULL;
 	CLIENT *client = client_create(cr, fd);
+	client_ref(client, "adding to client registry");
 	if(client == NULL)
 		return NULL;
 	P(&(cr-> sem));
-	cr->client_array[cr->num_clients] = malloc(sizeof(client));
 	cr->client_array[cr->num_clients] = client;
 	cr -> num_clients = (cr -> num_clients) + 1;
 	V(&(cr->sem));
@@ -101,13 +101,18 @@ int creg_unregister(CLIENT_REGISTRY *cr, CLIENT *client){
 		return -1;
 	//shift everything down?
 	P(&(cr->sem));
+	client_unref(cr->client_array[tracker], "client removed from client registry");
 	for(int i = tracker; i < cr -> num_clients - 1; i++){
 		CLIENT *updated = cr->client_array[i+1];
 		cr->client_array[i] = updated;
 	}
 	cr->num_clients = (cr->num_clients) -1;
+	if(cr->num_clients == 0){
+		V(&(cr->sem));
+		creg_shutdown_all(cr);
+	}
 	V(&(cr->sem));
-	debug("Unregister cliend fd %d (total connected: %d)", client_get_fd(client), cr-> num_clients);
+	debug("Unregister client fd %d (total connected: %d)", client_get_fd(client), cr-> num_clients);
 	return 0;
 }
 
@@ -151,5 +156,14 @@ CLIENT **creg_all_clients(CLIENT_REGISTRY *cr){
  */
 void creg_shutdown_all(CLIENT_REGISTRY *cr){
 	debug("in creg_shutdown_all");
+	// pthread_mutex_t shutdown_mutex;
+	// pthread_mutex_init(&shutdown_mutex, NULL);
+	// pthread_mutex_lock(&shutdown_mutex);
+	P(&(cr->sem));
+	for(int i = 0; i < cr-> num_clients; i++){
+		shutdown(client_get_fd(cr->client_array[i]), SHUT_RDWR);
+	}
+	V(&(cr->sem));
+	// pthread_mutex_unlock(&shutdown_mutex);
 }
 

@@ -22,6 +22,9 @@ struct user_registry {
 USER_REGISTRY *ureg_init(void){
 	debug("Initialize User Registry");
 	USER_REGISTRY *new_user_reg = malloc(sizeof(user_registry));
+	if(new_user_reg == NULL)
+		return NULL;
+	new_user_reg -> head = NULL;
 	return new_user_reg;
 }
 

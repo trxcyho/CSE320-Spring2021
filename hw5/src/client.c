@@ -111,10 +111,12 @@ int client_login(CLIENT *client, char *handle){
 				debug("Can't login, user %s exists", handle);
 				return -1;
 			}
+			client_unref(client_arr[i], "for reference in clients list being discarded");
 		}
 		i++;
-		// client_unref(client_arr[i], "for reference in clients list being discarded");
+
 	}
+
 	free(client_arr);
 	debug("Login user %s", handle);
 	//register handle with user reg
@@ -181,7 +183,7 @@ USER *client_get_user(CLIENT *client, int no_ref){
  * when finished with the MAILBOX object.
  * @return  The MAILBOX that the CLIENT is currently using,
  * otherwise NULL if the client is not currently logged in.
- */
+*/
 MAILBOX *client_get_mailbox(CLIENT *client, int no_ref){
 	debug("in client get mailbox");
 	if(client->loggedin == 0)
