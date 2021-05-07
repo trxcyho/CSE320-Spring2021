@@ -16,6 +16,7 @@
 // 	int size;
 // 	MAILBOX_ENTRY **entries;
 // 	MAILBOX_DISCARD_HOOK *hook;
+// 	sem_t counting; //keep track amount of entries
 // };
 
 // /*
@@ -36,7 +37,10 @@
 //  *
 //  * The following is the type of discard hook function.
 //  */
-// typedef void (MAILBOX_DISCARD_HOOK)(MAILBOX_ENTRY *);
+// void calling_hook(MAILBOX_ENTRY *mb_entry){
+// 	//TODO:
+// 	return;
+// }
 
 // /*
 //  * Create a new mailbox for a given handle.  A private copy of the
@@ -49,6 +53,7 @@
 // 		return NULL;
 // 	mailbox -> name = copy_handle;
 // 	Sem_init(&(mailbox->m_mutex), 0, 1);
+// 	Sem_init(&(mailbox->counting), 0, 0);
 // 	mailbox -> ref_count = 1;
 // 	mailbox -> defunct = 0;
 // 	mailbox-> size = 0;
@@ -60,9 +65,10 @@
 // /*
 //  * Set the discard hook for a mailbox.
 //  */
-// void mb_set_discard_hook(MAILBOX *mb, MAILBOX_DISCARD_HOOK *){
+// void mb_set_discard_hook(MAILBOX *mb, MAILBOX_DISCARD_HOOK *func){
 // 	P(&mb->m_mutex);
-// 	// mb-> hook =
+// 	mb-> hook = func;
+// 	V(&mb->m_mutex);
 // }
 
 // /*
@@ -99,6 +105,7 @@
 //  * to exist until the last outstanding reference to it has been
 //  * discarded.  At that point, the mailbox will be finalized, and any
 //  * entries that remain in it will be discarded.
+
 
 // void mb_shutdown(MAILBOX *mb){
 // 	P(&mb->m_mutex);
@@ -143,7 +150,7 @@
 // 	MAILBOX_ENTRY *entry = malloc(sizeof(MAILBOX_ENTRY));
 // 	entry -> type = MESSAGE_ENTRY_TYPE;
 // 	entry -> content.message = *message;
-
+// 	P(&mb->counting);
 // 	P(&mb -> m_mutex);
 // 	mb -> entries[mb-> size] = entry;
 // 	mb-> size = (mb-> size) +1;
@@ -165,6 +172,7 @@
 // 	entry -> type = NOTICE_ENTRY_TYPE;
 // 	entry -> content.notice = *notice;
 
+// 	P(&mb->counting);
 // 	P(&mb -> m_mutex);
 // 	mb -> entries[mb-> size] = entry;
 // 	mb-> size = (mb-> size) +1;
@@ -186,14 +194,17 @@
 // MAILBOX_ENTRY *mb_next_entry(MAILBOX *mb){
 // 	if(mb -> defunct == 1)
 // 		return NULL;
-// 	// P(&mb -> m_mutex);
-// 	// V(&mb -> m_mutex);
 
 // 	//check if something in array
 // 	// if(mb-> size == 0)
 
 // 	//shift array downwards
+// 	V(&mb->counting);//decrease amount and locks when nothing
+// 	MAILBOX_ENTRY *first = mb-> entries[0];
 // 	for(int i = 0; i < (mb->size)-1; i++){
-// 		MAILBOX_ENTRY *entry =
+// 		MAILBOX_ENTRY *entry = mb-> entries[i+1];
+// 		mb-> entries[i] = entry;
 // 	}
+
+// 	return first;
 // }
