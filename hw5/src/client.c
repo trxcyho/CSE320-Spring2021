@@ -102,20 +102,24 @@ int client_login(CLIENT *client, char *handle){
 	pthread_mutex_lock(&mutex);
 	USER * user = ureg_register(user_registry, handle);
 	CLIENT **client_arr = creg_all_clients(client_registry);//from global
+	if(client_arr == NULL)
+		return -1;
 	//loop through client_arr and see if any client logged in -> user handle equaivalent
 	int i = 0;
+	int exists = 0;
 	while(client_arr[i] != NULL){
 		debug("client while login");
+		client_unref(client_arr[i], "for reference in clients list being discarded");
 		if(client_arr[i] -> loggedin == 1){
 			if(strcmp(user_get_handle(client_arr[i]->user), handle) == 0){
 				debug("Can't login, user %s exists", handle);
-				return -1;
+				exists = 1;
 			}
-			client_unref(client_arr[i], "for reference in clients list being discarded");
 		}
 		i++;
-
 	}
+	if (exists == 1)
+		return -1;
 
 	free(client_arr);
 	debug("Login user %s", handle);

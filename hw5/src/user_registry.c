@@ -17,7 +17,7 @@ struct user_registry {
 	node *head;
 };
 
-
+sem_t mutex;
 
 USER_REGISTRY *ureg_init(void){
 	debug("Initialize User Registry");
@@ -25,6 +25,7 @@ USER_REGISTRY *ureg_init(void){
 	if(new_user_reg == NULL)
 		return NULL;
 	new_user_reg -> head = NULL;
+	sem_init(&mutex, 0, 1);
 	return new_user_reg;
 }
 
@@ -48,8 +49,6 @@ void ureg_fini(USER_REGISTRY *ureg){
 USER *ureg_register(USER_REGISTRY *ureg, char *handle){
 	//loop through and see if that handle exists
 	debug("Register user %s\n", handle);
-	sem_t mutex;
-	sem_init(&mutex, 0, 1);
 	//no nodes
 	if(ureg -> head == NULL){
 		debug("User with handle '%s' does not exist yet", handle);
@@ -95,15 +94,13 @@ USER *ureg_register(USER_REGISTRY *ureg, char *handle){
 }
 
 void ureg_unregister(USER_REGISTRY *ureg, char *handle){
-	sem_t mutex;
-	sem_init(&mutex, 0, 1);
-
 	node *current = ureg -> head;
 	node *links;
 	node *freenode;
+	P(&mutex);
 	//head
 	if(strcmp(user_get_handle(current->user), handle) == 0){
-		P(&mutex);
+
 		user_unref(current -> user, "for unregistering user");
 		links = current -> next;
 		ureg -> head = links;
@@ -114,7 +111,6 @@ void ureg_unregister(USER_REGISTRY *ureg, char *handle){
 	//middle
 	while(current -> next != NULL){
 		if(strcmp(user_get_handle(current->user), handle) == 0){
-			P(&mutex);
 			user_unref(current -> user, "for unregistering user");
 			freenode = current;
 			current = current -> next;
@@ -128,7 +124,6 @@ void ureg_unregister(USER_REGISTRY *ureg, char *handle){
 	}
 	//tail
 	if(strcmp(user_get_handle(current->user), handle) == 0){
-		P(&mutex);
 		user_unref(current -> user, "for unregistering user");
 		free(current);
 		links-> next = NULL;
