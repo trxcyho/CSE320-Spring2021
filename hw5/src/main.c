@@ -65,7 +65,7 @@ int main(int argc, char* argv[]){
     }
     if(p_flag == 0){
         printf("USAGE: -p <port> [-h <host>]\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
 
