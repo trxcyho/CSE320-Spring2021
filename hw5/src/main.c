@@ -65,7 +65,7 @@ int main(int argc, char* argv[]){
     }
     if(p_flag == 0){
         printf("USAGE: -p <port> [-h <host>]\n");
-        exit(EXIT_FAILURE);
+        // exit(EXIT_FAILURE);
     }
 
 
@@ -83,10 +83,10 @@ int main(int argc, char* argv[]){
     //if port number is null of less than 1024, printf error and return?
 
     int server = Open_listenfd(port_num); //conect to designated port_num
-    if(server < 0){//port_num not valid
-        debug("port number not valid");
-        return 1;
-    }
+    // if(server < 0){//port_num not valid
+    //     debug("port number not valid");
+    //     return 1;
+    // }
 
     int client_socket;
     struct sockaddr_in client;

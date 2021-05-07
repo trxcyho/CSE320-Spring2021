@@ -12,7 +12,7 @@
 // 	char *name;
 // 	int ref_count;
 // 	int defunct; //1=true 0=false
-// 	sem_t m_mutex;
+// 	pthread_mutex_t m_mutex;
 // 	int size;
 // 	MAILBOX_ENTRY **entries;
 // 	MAILBOX_DISCARD_HOOK *hook;
@@ -53,7 +53,7 @@
 // 	if(mailbox == NULL || copy_handle == NULL)
 // 		return NULL;
 // 	mailbox -> name = copy_handle;
-// 	Sem_init(&(mailbox->m_mutex), 0, 1);
+// 	pthread_mutex_init(&(mailbox->m_mutex), NULL);
 // 	Sem_init(&(mailbox->counting), 0, 0);
 // 	mailbox -> ref_count = 1;
 // 	mailbox -> defunct = 0;
@@ -68,9 +68,9 @@
 //  */
 // void mb_set_discard_hook(MAILBOX *mb, MAILBOX_DISCARD_HOOK *func){
 // 	debug("in mb_set_discard_hook");
-// 	P(&mb->m_mutex);
+// 	pthread_mutex_lock(&mb->m_mutex);
 // 	mb-> hook = func;
-// 	V(&mb->m_mutex);
+// 	pthread_mutex_unlock(&mb->m_mutex);
 // }
 
 // /*
@@ -80,10 +80,10 @@
 //  * that exist to the mailbox.
 //  */
 // void mb_ref(MAILBOX *mb, char *why){
-// 	P(&mb->m_mutex);
+// 	pthread_mutex_lock(&mb->m_mutex);
 // 	mb -> ref_count = (mb -> ref_count) +1;
 // 	debug("Increase mailbox ref_count (%d -> %d): %s", mb -> ref_count - 1, mb -> ref_count, why);
-// 	V(&mb->m_mutex);
+// 	pthread_mutex_unlock(&mb->m_mutex);
 // }
 
 // /*
@@ -94,10 +94,10 @@
 //  * the mailbox will be finalized.
 //  */
 // void mb_unref(MAILBOX *mb, char *why){
-// 	P(&mb->m_mutex);
+// 	pthread_mutex_lock(&mb->m_mutex);
 // 	mb -> ref_count = (mb -> ref_count) -1;
 // 	debug("Increase mailbox ref_count (%d -> %d): %s", mb -> ref_count + 1, mb -> ref_count, why);
-// 	V(&mb->m_mutex);
+// 	pthread_mutex_unlock(&mb->m_mutex);
 // }
 
 // /*
@@ -111,9 +111,9 @@
 
 // void mb_shutdown(MAILBOX *mb){
 // 	debug("in mb_shutdown");
-// 	P(&mb->m_mutex);
+// 	pthread_mutex_lock(&mb->m_mutex);
 // 	mb -> defunct = 1;
-// 	V(&mb->m_mutex);
+// 	pthread_mutex_unlock(&mb->m_mutex);
 // }
 
 // /*
@@ -153,8 +153,8 @@
 // 	MAILBOX_ENTRY *entry = malloc(sizeof(MAILBOX_ENTRY));
 // 	entry -> type = MESSAGE_ENTRY_TYPE;
 // 	entry -> content.message = *message;
-// 	P(&mb->counting);
-// 	P(&mb -> m_mutex);
+// 	V(&mb->counting);
+// 	pthread_mutex_lock(&mb -> m_mutex);
 // 	mb -> entries[mb-> size] = entry;
 // 	mb-> size = (mb-> size) +1;
 // 	mb -> entries[mb-> size] = NULL;
@@ -162,7 +162,8 @@
 // 		debug("Add message: msgid=%d, length=%d, body=%s, from=%s", msgid, length, (char *)body, mb_get_handle(from));
 // 	else
 // 		debug("Add message: msgid=%d, length=%d, body=NULL, from=%s", msgid, length, mb_get_handle(from));
-// 	V(&mb -> m_mutex);
+// 	pthread_mutex_unlock(&mb -> m_mutex);
+// 	// P(&mb->counting);
 // }
 
 // /*
@@ -179,13 +180,13 @@
 // 	entry -> type = NOTICE_ENTRY_TYPE;
 // 	entry -> content.notice = *notice;
 
-// 	P(&mb->counting);
-// 	P(&mb -> m_mutex);
+// 	V(&mb->counting);
+// 	pthread_mutex_lock(&mb -> m_mutex);
 // 	mb -> entries[mb-> size] = entry;
 // 	mb-> size = (mb-> size) +1;
 // 	mb -> entries[mb-> size] = NULL;
 // 	debug("Add notice: msgid=%d, notice type=%d", msgid, ntype);
-// 	V(&mb -> m_mutex);
+// 	pthread_mutex_unlock(&mb -> m_mutex);
 // }
 
 // /*
@@ -204,11 +205,10 @@
 // 		return NULL;
 
 // 	//check if something in array
-// 	// if(mb-> size == 0)
 // 	debug("in mb_next_entry");
 // 	//shift array downwards
-// 	V(&mb->counting);//decrease amount and locks when nothing
-// 	P(&mb -> m_mutex);
+// 	P(&mb->counting);//decrease amount and locks when nothing
+// 	pthread_mutex_lock(&mb -> m_mutex);
 // 	debug("num entries in mailbox %d\n", mb->size);
 // 	MAILBOX_ENTRY *first = mb-> entries[0];
 // 	for(int i = 0; i < (mb->size)-1; i++){
@@ -217,6 +217,7 @@
 // 	}
 // 	mb-> size = (mb-> size) -1;
 // 	mb->entries[mb->size] = NULL;
-// 	V(&mb -> m_mutex);
+// 	//TODO: mb_unref if different from itself(messages only)
+// 	pthread_mutex_unlock(&mb -> m_mutex);
 // 	return first;
 // }
