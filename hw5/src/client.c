@@ -118,10 +118,10 @@ int client_login(CLIENT *client, char *handle){
 		}
 		i++;
 	}
+	free(client_arr);
 	if (exists == 1)
 		return -1;
 
-	free(client_arr);
 	debug("Login user %s", handle);
 	//register handle with user reg
 
@@ -154,6 +154,7 @@ int client_logout(CLIENT *client){
 	user_unref(client ->user, "client logged out");
 	mb_unref(client-> mailbox, "client logged out");
 	mb_shutdown(client -> mailbox);
+	// debug("client_logout after mb_shutdown");
 	client->user=  NULL;
 	client -> mailbox = NULL;
 	client -> loggedin = 0;
@@ -196,8 +197,8 @@ MAILBOX *client_get_mailbox(CLIENT *client, int no_ref){
 	if(no_ref == 0){
 		pthread_mutex_unlock(&client -> client_mutex);
 		mb_ref(client-> mailbox, "client get mailbox (no_ref = 0)");
-	}
-	pthread_mutex_unlock(&client -> client_mutex);
+	}else
+		pthread_mutex_unlock(&client -> client_mutex);
 	return client -> mailbox;
 }
 

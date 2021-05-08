@@ -37,8 +37,10 @@ void ureg_fini(USER_REGISTRY *ureg){
 		while(head -> next != NULL){
 			current = head;
 			head = head -> next;
+			// user_unref(current->user, "because user registry is being finalized");
 			free(current);
 		}
+		user_unref(head->user, "because user registry is being finalized");
 		free(head);
 	}
 	free(ureg);
