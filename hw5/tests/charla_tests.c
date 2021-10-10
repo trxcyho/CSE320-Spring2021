@@ -37,7 +37,7 @@ Test(student_suite, 00_start_server, .timeout = 30) {
     cr_assert_neq(WEXITSTATUS(ret), 0, "Server was already running");
     fprintf(stderr, "Starting server...");
     if((server_pid = fork()) == 0) {
-	execlp("valgrind", "charla", "--leak-check=full", "--track-fds=yes",
+	execlp("valgrind", "charla", "--leak-check=full", "--track-fds=yes","--show-leak-kinds=all", "--track-origins=yes",
 	       "--error-exitcode=37", "--log-file=valgrind.out", "bin/charla", "-p", "9999", NULL);
 	fprintf(stderr, "Failed to exec server\n");
 	abort();
@@ -55,7 +55,7 @@ Test(student_suite, 00_start_server, .timeout = 30) {
     wait(&ret);
     fprintf(stderr, "Server wait() returned = 0x%x\n", ret);
     if(WIFSIGNALED(ret)) {
-	fprintf(stderr, "Server terminated with signal %d\n", WTERMSIG(ret));	
+	fprintf(stderr, "Server terminated with signal %d\n", WTERMSIG(ret));
 	system("cat valgrind.out");
 	if(WTERMSIG(ret) == 9)
 	    cr_assert_fail("Server did not terminate after SIGHUP");

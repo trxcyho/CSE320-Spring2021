@@ -1,0 +1,56 @@
+rsrc/algebraic.ntn
+-s
+-a
+-s -o
+-s -o result.txt
+-s -f
+-s -t
+-s -t french
+-s -t polish
+-c
+-c 2
+-c 2,5,20
+-c 2,5,20 -b
+-e
+-e 2
+-e 25
+-d
+-d ascii
+-d postscript
+-d postscript -i
+-d tex
+-d tex -i
+-d roff
+-d xchess
+-d gnu
+-h
+-v
+-b
+
+--short-algebraic
+--long-algebraic
+--short-algebraic --output-file
+--short-algebraic --output-file result.txt
+--short-algebraic --input-language
+--short-algebraic --output-language
+--short-algebraic --output-language french
+--short-algebraic --output-language polish
+--show-after
+--show-after 2
+--show-after 2,5,20
+--show-after 2,5,20 --board-only
+--end-after
+--end-after 2
+--end-after 25
+--driver
+--driver ascii
+--driver postscript
+--driver postscript --no-headers
+--driver tex
+--driver tex --no-headers
+--driver roff
+--driver xchess
+--driver gnu
+--help
+--version
+--board-only

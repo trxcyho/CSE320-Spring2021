@@ -1,0 +1,449 @@
+
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn rsrc/algebraic.ntn
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -a
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -o
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -o result.txt
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -f
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -t
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -t french
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -t polish
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -c
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -c 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -c 2,5,20
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -c 2,5,20 -b
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -e
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -e 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -e 25
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d ascii
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d postscript
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d postscript -i
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d tex
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d tex -i
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d roff
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d xchess
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d gnu
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -h
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -v
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -b
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --long-algebraic
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-file
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-file result.txt
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --input-language
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-language
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-language french
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-language polish
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --show-after
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --show-after 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --show-after 2,5,20
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --show-after 2,5,20 --board-only
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --end-after
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --end-after 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --end-after 25
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver ascii
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver postscript
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver postscript --no-headers
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver tex
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver tex --no-headers
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver roff
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver xchess
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver gnu
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --help
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --version
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --board-only
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn rsrc/algebraic.ntn
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -a
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -o
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -o result.txt
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -f
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -t
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -t french
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -t polish
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -c
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -c 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -c 2,5,20
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -c 2,5,20 -b
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -e
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -e 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -e 25
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d ascii
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d postscript
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d postscript -i
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d tex
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d tex -i
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d roff
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d xchess
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d gnu
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -h
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -v
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -b
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --long-algebraic
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-file
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-file result.txt
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --input-language
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-language
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-language french
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-language polish
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --show-after
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --show-after 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --show-after 2,5,20
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --show-after 2,5,20 --board-only
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --end-after
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --end-after 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --end-after 25
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver ascii
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver postscript
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver postscript --no-headers
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver tex
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver tex --no-headers
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver roff
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver xchess
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver gnu
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --help
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --version
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --board-only
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn rsrc/algebraic.ntn
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -a
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -o
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -o result.txt
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -f
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -t
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -t french
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -t polish
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -c
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -c 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -c 2,5,20
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -c 2,5,20 -b
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -e
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -e 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -e 25
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d ascii
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d postscript
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d postscript -i
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d tex
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d tex -i
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d roff
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d xchess
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d gnu
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -h
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -v
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -b
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --long-algebraic
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-file
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-file result.txt
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --input-language
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-language
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-language french
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-language polish
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --show-after
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --show-after 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --show-after 2,5,20
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --show-after 2,5,20 --board-only
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --end-after
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --end-after 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --end-after 25
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver ascii
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver postscript
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver postscript --no-headers
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver tex
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver tex --no-headers
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver roff
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver xchess
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver gnu
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --help
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --version
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --board-only
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn rsrc/algebraic.ntn
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -a
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -o
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -o result.txt
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -f
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -t
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -t french
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -t polish
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -c
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -c 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -c 2,5,20
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -c 2,5,20 -b
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -e
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -e 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -e 25
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d ascii
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d postscript
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d postscript -i
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d tex
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d tex -i
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d roff
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d xchess
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d gnu
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -h
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -v
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -b
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --long-algebraic
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-file
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-file result.txt
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --input-language
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-language
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-language french
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-language polish
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --show-after
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --show-after 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --show-after 2,5,20
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --show-after 2,5,20 --board-only
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --end-after
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --end-after 2
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --end-after 25
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver ascii
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver postscript
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver postscript --no-headers
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver tex
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver tex --no-headers
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver roff
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver xchess
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver gnu
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --help
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --version
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --board-only
+ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

@@ -1,0 +1,449 @@
+
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn rsrc/algebraic.ntn
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -a
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -o
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -o result.txt
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -f
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -t
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -t french
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -s -t polish
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -c
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -c 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -c 2,5,20
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -c 2,5,20 -b
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -e
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -e 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -e 25
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d ascii
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d postscript
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d postscript -i
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d tex
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d tex -i
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d roff
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d xchess
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -d gnu
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -h
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -v
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn -b
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --long-algebraic
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-file
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-file result.txt
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --input-language
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-language
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-language french
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --short-algebraic --output-language polish
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --show-after
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --show-after 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --show-after 2,5,20
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --show-after 2,5,20 --board-only
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --end-after
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --end-after 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --end-after 25
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver ascii
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver postscript
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver postscript --no-headers
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver tex
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver tex --no-headers
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver roff
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver xchess
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --driver gnu
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --help
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --version
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/algebric.ntn --board-only
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn rsrc/algebraic.ntn
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -a
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -o
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -o result.txt
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -f
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -t
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -t french
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -s -t polish
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -c
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -c 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -c 2,5,20
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -c 2,5,20 -b
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -e
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -e 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -e 25
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d ascii
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d postscript
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d postscript -i
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d tex
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d tex -i
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d roff
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d xchess
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -d gnu
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -h
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -v
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn -b
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --long-algebraic
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-file
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-file result.txt
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --input-language
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-language
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-language french
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --short-algebraic --output-language polish
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --show-after
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --show-after 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --show-after 2,5,20
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --show-after 2,5,20 --board-only
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --end-after
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --end-after 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --end-after 25
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver ascii
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver postscript
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver postscript --no-headers
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver tex
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver tex --no-headers
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver roff
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver xchess
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --driver gnu
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --help
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --version
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/boudy.ntn --board-only
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn rsrc/algebraic.ntn
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -a
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -o
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -o result.txt
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -f
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -t
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -t french
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -s -t polish
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -c
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -c 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -c 2,5,20
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -c 2,5,20 -b
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -e
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -e 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -e 25
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d ascii
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d postscript
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d postscript -i
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d tex
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d tex -i
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d roff
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d xchess
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -d gnu
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -h
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -v
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn -b
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --long-algebraic
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-file
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-file result.txt
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --input-language
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-language
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-language french
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --short-algebraic --output-language polish
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --show-after
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --show-after 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --show-after 2,5,20
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --show-after 2,5,20 --board-only
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --end-after
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --end-after 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --end-after 25
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver ascii
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver postscript
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver postscript --no-headers
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver tex
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver tex --no-headers
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver roff
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver xchess
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --driver gnu
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --help
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --version
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/keywords.ntn --board-only
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn rsrc/algebraic.ntn
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -a
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -o
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -o result.txt
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -f
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -t
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -t french
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -s -t polish
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -c
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -c 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -c 2,5,20
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -c 2,5,20 -b
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -e
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -e 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -e 25
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d ascii
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d postscript
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d postscript -i
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d tex
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d tex -i
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d roff
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d xchess
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -d gnu
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -h
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -v
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn -b
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --long-algebraic
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-file
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-file result.txt
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --input-language
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-language
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-language french
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --short-algebraic --output-language polish
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --show-after
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --show-after 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --show-after 2,5,20
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --show-after 2,5,20 --board-only
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --end-after
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --end-after 2
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --end-after 25
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver
+1
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver ascii
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver postscript
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver postscript --no-headers
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver tex
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver tex --no-headers
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver roff
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver xchess
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --driver gnu
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --help
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --version
+0
+valgrind --leak-check=full --show-leak-kinds=all bin/notation rsrc/shortened.ntn --board-only
+0

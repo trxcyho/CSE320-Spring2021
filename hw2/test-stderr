@@ -1,0 +1,881 @@
+
+bin/notation rsrc/algebric.ntn -s
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -a
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -s -o
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'o'
+
+bin/notation rsrc/algebric.ntn -s -o result.txt
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -s -f
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'f'
+
+bin/notation rsrc/algebric.ntn -s -t
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 't'
+
+bin/notation rsrc/algebric.ntn -s -t french
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -s -t polish
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -c
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'c'
+
+bin/notation rsrc/algebric.ntn -c 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -c 2,5,20
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -c 2,5,20 -b
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -e
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'e'
+
+bin/notation rsrc/algebric.ntn -e 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -e 25
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -d
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'd'
+
+bin/notation rsrc/algebric.ntn -d ascii
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -d postscript
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -d postscript -i
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -d tex
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -d tex -i
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -d roff
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -d xchess
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -d gnu
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -h
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+Command line options: 
+<inputfile>	: specify the input file. If none, keyboard is assumed
+-a		: algebraic move notation output
+-s		: shortened move notation output
+-f <language>	: specify the chess symbol input language: french,
+	english, italian, spanish, german, dutch, czech, hungarian, polish,
+	romanian, FIDE. (for portuguese, use spanish)  
+-t <language>	: specify the chess symbol output language (same
+options as input language).
+-o <outputfile>	: specify the output file. If none, screen is assumed
+-c <number>[,<number]	: specify the number of the moves to display
+	the board. if none, board is diplayed at end of file
+-e <number>     : display the board at the move number and then stops
+-b		: display only the board, not the moves
+-d <drivername>	: specify the output driver: ascii,postscript, tex
+(latex), roff, xchess (xchess save format), gnu (gnuan input format) 
+-i              : suppress headers/footer in output (useful
+		for tex/ps drivers)
+-h		: shows this help
+-v		: shows version number
+
+bin/notation rsrc/algebric.ntn -v
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn -b
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --short-algebraic
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --long-algebraic
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --short-algebraic --output-file
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--output-file' requires an argument
+
+bin/notation rsrc/algebric.ntn --short-algebraic --output-file result.txt
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --short-algebraic --input-language
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--input-language' requires an argument
+
+bin/notation rsrc/algebric.ntn --short-algebraic --output-language
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--output-language' requires an argument
+
+bin/notation rsrc/algebric.ntn --short-algebraic --output-language french
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --short-algebraic --output-language polish
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --show-after
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--show-after' requires an argument
+
+bin/notation rsrc/algebric.ntn --show-after 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --show-after 2,5,20
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --show-after 2,5,20 --board-only
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --end-after
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--end-after' requires an argument
+
+bin/notation rsrc/algebric.ntn --end-after 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --end-after 25
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --driver
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--driver' requires an argument
+
+bin/notation rsrc/algebric.ntn --driver ascii
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --driver postscript
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --driver postscript --no-headers
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --driver tex
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --driver tex --no-headers
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --driver roff
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --driver xchess
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --driver gnu
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --help
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+Command line options: 
+<inputfile>	: specify the input file. If none, keyboard is assumed
+-a		: algebraic move notation output
+-s		: shortened move notation output
+-f <language>	: specify the chess symbol input language: french,
+	english, italian, spanish, german, dutch, czech, hungarian, polish,
+	romanian, FIDE. (for portuguese, use spanish)  
+-t <language>	: specify the chess symbol output language (same
+options as input language).
+-o <outputfile>	: specify the output file. If none, screen is assumed
+-c <number>[,<number]	: specify the number of the moves to display
+	the board. if none, board is diplayed at end of file
+-e <number>     : display the board at the move number and then stops
+-b		: display only the board, not the moves
+-d <drivername>	: specify the output driver: ascii,postscript, tex
+(latex), roff, xchess (xchess save format), gnu (gnuan input format) 
+-i              : suppress headers/footer in output (useful
+		for tex/ps drivers)
+-h		: shows this help
+-v		: shows version number
+
+bin/notation rsrc/algebric.ntn --version
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/algebric.ntn --board-only
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn rsrc/algebraic.ntn
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+too many files
+
+bin/notation rsrc/boudy.ntn -s
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -a
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -s -o
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'o'
+
+bin/notation rsrc/boudy.ntn -s -o result.txt
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -s -f
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'f'
+
+bin/notation rsrc/boudy.ntn -s -t
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 't'
+
+bin/notation rsrc/boudy.ntn -s -t french
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -s -t polish
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -c
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'c'
+
+bin/notation rsrc/boudy.ntn -c 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -c 2,5,20
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -c 2,5,20 -b
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -e
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'e'
+
+bin/notation rsrc/boudy.ntn -e 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -e 25
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -d
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'd'
+
+bin/notation rsrc/boudy.ntn -d ascii
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -d postscript
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -d postscript -i
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -d tex
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -d tex -i
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -d roff
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -d xchess
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -d gnu
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -h
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+Command line options: 
+<inputfile>	: specify the input file. If none, keyboard is assumed
+-a		: algebraic move notation output
+-s		: shortened move notation output
+-f <language>	: specify the chess symbol input language: french,
+	english, italian, spanish, german, dutch, czech, hungarian, polish,
+	romanian, FIDE. (for portuguese, use spanish)  
+-t <language>	: specify the chess symbol output language (same
+options as input language).
+-o <outputfile>	: specify the output file. If none, screen is assumed
+-c <number>[,<number]	: specify the number of the moves to display
+	the board. if none, board is diplayed at end of file
+-e <number>     : display the board at the move number and then stops
+-b		: display only the board, not the moves
+-d <drivername>	: specify the output driver: ascii,postscript, tex
+(latex), roff, xchess (xchess save format), gnu (gnuan input format) 
+-i              : suppress headers/footer in output (useful
+		for tex/ps drivers)
+-h		: shows this help
+-v		: shows version number
+
+bin/notation rsrc/boudy.ntn -v
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn -b
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --short-algebraic
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --long-algebraic
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --short-algebraic --output-file
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--output-file' requires an argument
+
+bin/notation rsrc/boudy.ntn --short-algebraic --output-file result.txt
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --short-algebraic --input-language
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--input-language' requires an argument
+
+bin/notation rsrc/boudy.ntn --short-algebraic --output-language
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--output-language' requires an argument
+
+bin/notation rsrc/boudy.ntn --short-algebraic --output-language french
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --short-algebraic --output-language polish
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --show-after
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--show-after' requires an argument
+
+bin/notation rsrc/boudy.ntn --show-after 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --show-after 2,5,20
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --show-after 2,5,20 --board-only
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --end-after
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--end-after' requires an argument
+
+bin/notation rsrc/boudy.ntn --end-after 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --end-after 25
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --driver
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--driver' requires an argument
+
+bin/notation rsrc/boudy.ntn --driver ascii
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --driver postscript
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --driver postscript --no-headers
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --driver tex
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --driver tex --no-headers
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --driver roff
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --driver xchess
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --driver gnu
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --help
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+Command line options: 
+<inputfile>	: specify the input file. If none, keyboard is assumed
+-a		: algebraic move notation output
+-s		: shortened move notation output
+-f <language>	: specify the chess symbol input language: french,
+	english, italian, spanish, german, dutch, czech, hungarian, polish,
+	romanian, FIDE. (for portuguese, use spanish)  
+-t <language>	: specify the chess symbol output language (same
+options as input language).
+-o <outputfile>	: specify the output file. If none, screen is assumed
+-c <number>[,<number]	: specify the number of the moves to display
+	the board. if none, board is diplayed at end of file
+-e <number>     : display the board at the move number and then stops
+-b		: display only the board, not the moves
+-d <drivername>	: specify the output driver: ascii,postscript, tex
+(latex), roff, xchess (xchess save format), gnu (gnuan input format) 
+-i              : suppress headers/footer in output (useful
+		for tex/ps drivers)
+-h		: shows this help
+-v		: shows version number
+
+bin/notation rsrc/boudy.ntn --version
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/boudy.ntn --board-only
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn rsrc/algebraic.ntn
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+too many files
+
+bin/notation rsrc/keywords.ntn -s
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -a
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -s -o
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'o'
+
+bin/notation rsrc/keywords.ntn -s -o result.txt
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -s -f
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'f'
+
+bin/notation rsrc/keywords.ntn -s -t
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 't'
+
+bin/notation rsrc/keywords.ntn -s -t french
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -s -t polish
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -c
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'c'
+
+bin/notation rsrc/keywords.ntn -c 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -c 2,5,20
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -c 2,5,20 -b
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -e
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'e'
+
+bin/notation rsrc/keywords.ntn -e 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -e 25
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -d
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'd'
+
+bin/notation rsrc/keywords.ntn -d ascii
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -d postscript
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -d postscript -i
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -d tex
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -d tex -i
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -d roff
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -d xchess
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -d gnu
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -h
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+Command line options: 
+<inputfile>	: specify the input file. If none, keyboard is assumed
+-a		: algebraic move notation output
+-s		: shortened move notation output
+-f <language>	: specify the chess symbol input language: french,
+	english, italian, spanish, german, dutch, czech, hungarian, polish,
+	romanian, FIDE. (for portuguese, use spanish)  
+-t <language>	: specify the chess symbol output language (same
+options as input language).
+-o <outputfile>	: specify the output file. If none, screen is assumed
+-c <number>[,<number]	: specify the number of the moves to display
+	the board. if none, board is diplayed at end of file
+-e <number>     : display the board at the move number and then stops
+-b		: display only the board, not the moves
+-d <drivername>	: specify the output driver: ascii,postscript, tex
+(latex), roff, xchess (xchess save format), gnu (gnuan input format) 
+-i              : suppress headers/footer in output (useful
+		for tex/ps drivers)
+-h		: shows this help
+-v		: shows version number
+
+bin/notation rsrc/keywords.ntn -v
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn -b
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --short-algebraic
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --long-algebraic
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --short-algebraic --output-file
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--output-file' requires an argument
+
+bin/notation rsrc/keywords.ntn --short-algebraic --output-file result.txt
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --short-algebraic --input-language
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--input-language' requires an argument
+
+bin/notation rsrc/keywords.ntn --short-algebraic --output-language
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--output-language' requires an argument
+
+bin/notation rsrc/keywords.ntn --short-algebraic --output-language french
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --short-algebraic --output-language polish
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --show-after
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--show-after' requires an argument
+
+bin/notation rsrc/keywords.ntn --show-after 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --show-after 2,5,20
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --show-after 2,5,20 --board-only
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --end-after
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--end-after' requires an argument
+
+bin/notation rsrc/keywords.ntn --end-after 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --end-after 25
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --driver
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--driver' requires an argument
+
+bin/notation rsrc/keywords.ntn --driver ascii
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --driver postscript
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --driver postscript --no-headers
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --driver tex
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --driver tex --no-headers
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --driver roff
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --driver xchess
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --driver gnu
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --help
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+Command line options: 
+<inputfile>	: specify the input file. If none, keyboard is assumed
+-a		: algebraic move notation output
+-s		: shortened move notation output
+-f <language>	: specify the chess symbol input language: french,
+	english, italian, spanish, german, dutch, czech, hungarian, polish,
+	romanian, FIDE. (for portuguese, use spanish)  
+-t <language>	: specify the chess symbol output language (same
+options as input language).
+-o <outputfile>	: specify the output file. If none, screen is assumed
+-c <number>[,<number]	: specify the number of the moves to display
+	the board. if none, board is diplayed at end of file
+-e <number>     : display the board at the move number and then stops
+-b		: display only the board, not the moves
+-d <drivername>	: specify the output driver: ascii,postscript, tex
+(latex), roff, xchess (xchess save format), gnu (gnuan input format) 
+-i              : suppress headers/footer in output (useful
+		for tex/ps drivers)
+-h		: shows this help
+-v		: shows version number
+
+bin/notation rsrc/keywords.ntn --version
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/keywords.ntn --board-only
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn rsrc/algebraic.ntn
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+too many files
+
+bin/notation rsrc/shortened.ntn -s
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -a
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -s -o
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'o'
+
+bin/notation rsrc/shortened.ntn -s -o result.txt
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -s -f
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'f'
+
+bin/notation rsrc/shortened.ntn -s -t
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 't'
+
+bin/notation rsrc/shortened.ntn -s -t french
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -s -t polish
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -c
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'c'
+
+bin/notation rsrc/shortened.ntn -c 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -c 2,5,20
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -c 2,5,20 -b
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -e
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'e'
+
+bin/notation rsrc/shortened.ntn -e 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -e 25
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -d
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option requires an argument -- 'd'
+
+bin/notation rsrc/shortened.ntn -d ascii
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -d postscript
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -d postscript -i
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -d tex
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -d tex -i
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -d roff
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -d xchess
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -d gnu
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -h
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+Command line options: 
+<inputfile>	: specify the input file. If none, keyboard is assumed
+-a		: algebraic move notation output
+-s		: shortened move notation output
+-f <language>	: specify the chess symbol input language: french,
+	english, italian, spanish, german, dutch, czech, hungarian, polish,
+	romanian, FIDE. (for portuguese, use spanish)  
+-t <language>	: specify the chess symbol output language (same
+options as input language).
+-o <outputfile>	: specify the output file. If none, screen is assumed
+-c <number>[,<number]	: specify the number of the moves to display
+	the board. if none, board is diplayed at end of file
+-e <number>     : display the board at the move number and then stops
+-b		: display only the board, not the moves
+-d <drivername>	: specify the output driver: ascii,postscript, tex
+(latex), roff, xchess (xchess save format), gnu (gnuan input format) 
+-i              : suppress headers/footer in output (useful
+		for tex/ps drivers)
+-h		: shows this help
+-v		: shows version number
+
+bin/notation rsrc/shortened.ntn -v
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn -b
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --short-algebraic
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --long-algebraic
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --short-algebraic --output-file
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--output-file' requires an argument
+
+bin/notation rsrc/shortened.ntn --short-algebraic --output-file result.txt
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --short-algebraic --input-language
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--input-language' requires an argument
+
+bin/notation rsrc/shortened.ntn --short-algebraic --output-language
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--output-language' requires an argument
+
+bin/notation rsrc/shortened.ntn --short-algebraic --output-language french
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --short-algebraic --output-language polish
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --show-after
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--show-after' requires an argument
+
+bin/notation rsrc/shortened.ntn --show-after 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --show-after 2,5,20
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --show-after 2,5,20 --board-only
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --end-after
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--end-after' requires an argument
+
+bin/notation rsrc/shortened.ntn --end-after 2
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --end-after 25
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --driver
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+bin/notation: option '--driver' requires an argument
+
+bin/notation rsrc/shortened.ntn --driver ascii
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --driver postscript
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --driver postscript --no-headers
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --driver tex
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --driver tex --no-headers
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --driver roff
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --driver xchess
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --driver gnu
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --help
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+Command line options: 
+<inputfile>	: specify the input file. If none, keyboard is assumed
+-a		: algebraic move notation output
+-s		: shortened move notation output
+-f <language>	: specify the chess symbol input language: french,
+	english, italian, spanish, german, dutch, czech, hungarian, polish,
+	romanian, FIDE. (for portuguese, use spanish)  
+-t <language>	: specify the chess symbol output language (same
+options as input language).
+-o <outputfile>	: specify the output file. If none, screen is assumed
+-c <number>[,<number]	: specify the number of the moves to display
+	the board. if none, board is diplayed at end of file
+-e <number>     : display the board at the move number and then stops
+-b		: display only the board, not the moves
+-d <drivername>	: specify the output driver: ascii,postscript, tex
+(latex), roff, xchess (xchess save format), gnu (gnuan input format) 
+-i              : suppress headers/footer in output (useful
+		for tex/ps drivers)
+-h		: shows this help
+-v		: shows version number
+
+bin/notation rsrc/shortened.ntn --version
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
+bin/notation rsrc/shortened.ntn --board-only
+@(#)notation.c	3.9 (C) Henry Thomas.   Release 3     Dated 12/10/91
+
